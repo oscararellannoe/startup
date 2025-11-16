@@ -4,9 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>AI Life Organizer | Organiza tu vida con IA</title>
-    <meta name="description" content="AI Life Organizer es una mini app que organiza tu dinero, tu tiempo y tus metas con ayuda de IA. Crea un plan de vida claro en minutos." />
+    <meta
+      name="description"
+      content="AI Life Organizer es una mini app que organiza tu dinero, tu tiempo y tus metas con ayuda de IA. Crea un plan de vida claro en minutos."
+    />
     <meta property="og:title" content="AI Life Organizer | Organiza tu vida con IA" />
-    <meta property="og:description" content="AI Life Organizer es una mini app que organiza tu dinero, tu tiempo y tus metas con ayuda de IA. Crea un plan de vida claro en minutos." />
+    <meta
+      property="og:description"
+      content="AI Life Organizer es una mini app que organiza tu dinero, tu tiempo y tus metas con ayuda de IA. Crea un plan de vida claro en minutos."
+    />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://tusitio.com" />
     <meta property="og:image" content="https://tusitio.com/preview.png" />
@@ -28,34 +34,59 @@
       };
     </script>
   </head>
-  <body class="bg-[#050816] bg-gradient-to-b from-[#050816] via-[#050816] to-[#020617] text-white min-h-screen antialiased">
+  <body
+    class="bg-[#050816] bg-gradient-to-b from-[#050816] via-[#050816] to-[#020617] text-white min-h-screen antialiased"
+  >
     <!-- Header -->
     <header class="sticky top-0 z-30 border-b border-white/5 bg-black/40 backdrop-blur">
-      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <div
+        class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8"
+      >
         <div class="flex items-center text-lg font-semibold tracking-tight text-white">
           AI Life Organizer
-          <span class="ml-2 rounded-full bg-white/10 px-2 py-0.5 text-xs uppercase text-slate-300">beta</span>
+          <span
+            class="ml-2 rounded-full bg-white/10 px-2 py-0.5 text-xs uppercase text-slate-300"
+            >beta</span
+          >
         </div>
         <nav class="hidden items-center gap-6 text-sm text-slate-200 md:flex">
           <a href="#como-funciona" class="hover:text-white">Cómo funciona</a>
           <a href="#beneficios" class="hover:text-white">Beneficios</a>
           <a href="#app" class="hover:text-white">App</a>
           <a href="#planes" class="hover:text-white">Planes</a>
-          <a href="#app" class="rounded-full bg-indigo-500 px-4 py-2 font-medium text-white shadow-lg shadow-indigo-500/30 transition hover:scale-[1.02] hover:bg-indigo-400">Probar gratis</a>
+          <a
+            href="#app"
+            class="rounded-full bg-indigo-500 px-4 py-2 font-medium text-white shadow-lg shadow-indigo-500/30 transition hover:scale-[1.02] hover:bg-indigo-400"
+            >Probar gratis</a
+          >
         </nav>
-        <button id="mobileMenuButton" class="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-white md:hidden">
+        <button
+          id="mobileMenuButton"
+          class="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-white md:hidden"
+        >
           <span class="sr-only">Abrir menú</span>
           <span class="block h-0.5 w-5 bg-white"></span>
           <span class="mt-1 block h-0.5 w-5 bg-white"></span>
           <span class="mt-1 block h-0.5 w-5 bg-white"></span>
         </button>
-        <div id="mobileMenu" class="absolute right-4 top-16 hidden w-56 rounded-2xl border border-white/10 bg-[#0b1020] p-4 shadow-xl">
+        <div
+          id="mobileMenu"
+          class="absolute right-4 top-16 hidden w-56 rounded-2xl border border-white/10 bg-[#0b1020] p-4 shadow-xl"
+        >
           <div class="flex flex-col gap-3 text-sm text-slate-200">
-            <a href="#como-funciona" class="rounded-full px-3 py-2 hover:bg-white/5">Cómo funciona</a>
-            <a href="#beneficios" class="rounded-full px-3 py-2 hover:bg-white/5">Beneficios</a>
+            <a href="#como-funciona" class="rounded-full px-3 py-2 hover:bg-white/5"
+              >Cómo funciona</a
+            >
+            <a href="#beneficios" class="rounded-full px-3 py-2 hover:bg-white/5"
+              >Beneficios</a
+            >
             <a href="#app" class="rounded-full px-3 py-2 hover:bg-white/5">App</a>
             <a href="#planes" class="rounded-full px-3 py-2 hover:bg-white/5">Planes</a>
-            <a href="#app" class="rounded-full bg-indigo-500 px-3 py-2 text-center font-medium text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-400">Probar gratis</a>
+            <a
+              href="#app"
+              class="rounded-full bg-indigo-500 px-3 py-2 text-center font-medium text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-400"
+              >Probar gratis</a
+            >
           </div>
         </div>
       </div>
@@ -63,55 +94,97 @@
 
     <main class="space-y-16 sm:space-y-20">
       <!-- Hero -->
-      <section id="hero" class="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24 opacity-0 translate-y-4">
+      <section
+        id="hero"
+        class="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24 opacity-0 translate-y-4"
+      >
         <div class="grid gap-12 md:grid-cols-2 md:items-center">
           <div>
-            <span class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">Mini app • Organiza tu vida con IA</span>
-            <h1 class="mt-6 text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
+            <span
+              class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300"
+              >Mini app • Organiza tu vida con IA</span
+            >
+            <h1
+              class="mt-6 text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl"
+            >
               Organiza tu dinero, tu tiempo y tu mente en
-              <span class="bg-gradient-to-r from-indigo-400 via-indigo-300 to-emerald-300 bg-clip-text text-transparent">un solo lugar.</span>
+              <span
+                class="bg-gradient-to-r from-indigo-400 via-indigo-300 to-emerald-300 bg-clip-text text-transparent"
+                >un solo lugar.</span
+              >
             </h1>
             <p class="mt-4 max-w-xl text-sm text-slate-300 sm:text-base">
-              AI Life Organizer toma tus ingresos, gastos, metas y horarios, y te devuelve un plan de vida claro: presupuesto, hábitos, rutina diaria y prioridades. En minutos, no en meses.
+              AI Life Organizer toma tus ingresos, gastos, metas y horarios, y te
+              devuelve un plan de vida claro: presupuesto, hábitos, rutina diaria y
+              prioridades. En minutos, no en meses.
             </p>
             <div class="mt-8 flex flex-wrap gap-3">
-              <a href="#app" class="inline-flex items-center justify-center rounded-full bg-indigo-500 px-5 py-2.5 text-sm font-medium shadow-lg shadow-indigo-500/30 transition hover:scale-[1.02] hover:bg-indigo-400 active:scale-[0.98]">
+              <a
+                href="#app"
+                class="inline-flex items-center justify-center rounded-full bg-indigo-500 px-5 py-2.5 text-sm font-medium shadow-lg shadow-indigo-500/30 transition hover:scale-[1.02] hover:bg-indigo-400 active:scale-[0.98]"
+              >
                 Crear mi plan en 3 minutos
               </a>
-              <a href="#como-funciona" class="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-slate-200 hover:bg-white/10">
+              <a
+                href="#como-funciona"
+                class="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-slate-200 hover:bg-white/10"
+              >
                 Ver cómo funciona
               </a>
             </div>
-            <p class="mt-4 text-xs text-slate-400">Sin descargas. Sin complicaciones. Solo claridad.</p>
+            <p class="mt-4 text-xs text-slate-400">
+              Sin descargas. Sin complicaciones. Solo claridad.
+            </p>
           </div>
           <div>
-            <div class="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 via-white/0 to-indigo-500/10 p-5 shadow-2xl shadow-indigo-950/40">
+            <div
+              class="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 via-white/0 to-indigo-500/10 p-5 shadow-2xl shadow-indigo-950/40"
+            >
               <div class="flex items-center justify-between">
                 <div>
-                  <p class="text-xs uppercase tracking-wide text-slate-400">Vista previa</p>
+                  <p class="text-xs uppercase tracking-wide text-slate-400">
+                    Vista previa
+                  </p>
                   <p class="text-lg font-semibold text-white">Tu plan hoy</p>
                 </div>
-                <span class="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-medium text-emerald-300">Balanceado</span>
+                <span
+                  class="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-medium text-emerald-300"
+                  >Balanceado</span
+                >
               </div>
               <div class="mt-6 space-y-4">
                 <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <p class="text-xs uppercase text-slate-400">Presupuesto inteligente</p>
-                  <p class="mt-2 text-sm text-slate-200">Asignación automática del 30% de tu ingreso a metas clave.</p>
+                  <p class="mt-2 text-sm text-slate-200">
+                    Asignación automática del 30% de tu ingreso a metas clave.
+                  </p>
                   <div class="mt-3 h-2 rounded-full bg-white/10">
-                    <div class="h-2 rounded-full bg-indigo-400" style="width: 70%"></div>
+                    <div
+                      class="h-2 rounded-full bg-indigo-400"
+                      style="width: 70%"
+                    ></div>
                   </div>
                 </div>
                 <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <p class="text-xs uppercase text-slate-400">Hábito semanal</p>
                   <div class="mt-2 flex flex-wrap gap-2 text-xs">
-                    <span class="rounded-full bg-white/10 px-3 py-1">Revisión domingo</span>
-                    <span class="rounded-full bg-white/10 px-3 py-1">2 pomodoros sin distracciones</span>
-                    <span class="rounded-full bg-white/10 px-3 py-1">Microahorro diario</span>
+                    <span class="rounded-full bg-white/10 px-3 py-1"
+                      >Revisión domingo</span
+                    >
+                    <span class="rounded-full bg-white/10 px-3 py-1"
+                      >2 pomodoros sin distracciones</span
+                    >
+                    <span class="rounded-full bg-white/10 px-3 py-1"
+                      >Microahorro diario</span
+                    >
                   </div>
                 </div>
                 <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <p class="text-xs uppercase text-slate-400">Horario ideal</p>
-                  <p class="mt-2 text-sm text-slate-200">Bloques mañana (08:00-09:00) y noche (21:00-21:30) dedicados a tus prioridades.</p>
+                  <p class="mt-2 text-sm text-slate-200">
+                    Bloques mañana (08:00-09:00) y noche (21:00-21:30) dedicados a tus
+                    prioridades.
+                  </p>
                   <div class="mt-3 flex gap-2 text-xs text-slate-300">
                     <span class="rounded-full bg-white/10 px-3 py-1">Focus</span>
                     <span class="rounded-full bg-white/10 px-3 py-1">Movimiento</span>
@@ -125,57 +198,127 @@
       </section>
 
       <!-- Cómo funciona -->
-      <section id="como-funciona" class="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8 opacity-0 translate-y-4">
-        <h2 class="text-center text-xl font-semibold text-white sm:text-2xl">Cómo funciona AI Life Organizer</h2>
-        <p class="mt-2 text-center text-sm text-slate-400">Tres pasos, cero complicaciones.</p>
+      <section
+        id="como-funciona"
+        class="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8 opacity-0 translate-y-4"
+      >
+        <h2 class="text-center text-xl font-semibold text-white sm:text-2xl">
+          Cómo funciona AI Life Organizer
+        </h2>
+        <p class="mt-2 text-center text-sm text-slate-400">
+          Tres pasos, cero complicaciones.
+        </p>
         <div class="mt-10 grid gap-6 sm:grid-cols-3">
-          <div class="flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/5 p-4">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-sm font-semibold">1</div>
+          <div
+            class="flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/5 p-4"
+          >
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-sm font-semibold"
+            >
+              1
+            </div>
             <h3 class="text-base font-medium text-white">Cuéntale tu situación</h3>
-            <p class="text-sm text-slate-400">Comparte tus números, horarios y lo que más te preocupa. No necesitas datos exactos: basta con aproximaciones.</p>
+            <p class="text-sm text-slate-400">
+              Comparte tus números, horarios y lo que más te preocupa. No necesitas
+              datos exactos: basta con aproximaciones.
+            </p>
           </div>
-          <div class="flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/5 p-4">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-sm font-semibold">2</div>
+          <div
+            class="flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/5 p-4"
+          >
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-sm font-semibold"
+            >
+              2
+            </div>
             <h3 class="text-base font-medium text-white">La IA arma tu plan</h3>
-            <p class="text-sm text-slate-400">Procesa tus respuestas y transforma todo en un plan claro con presupuesto, hábitos y bloques de tiempo.</p>
+            <p class="text-sm text-slate-400">
+              Procesa tus respuestas y transforma todo en un plan claro con
+              presupuesto, hábitos y bloques de tiempo.
+            </p>
           </div>
-          <div class="flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/5 p-4">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-sm font-semibold">3</div>
+          <div
+            class="flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/5 p-4"
+          >
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-sm font-semibold"
+            >
+              3
+            </div>
             <h3 class="text-base font-medium text-white">Aplica y ajusta</h3>
-            <p class="text-sm text-slate-400">Usa el plan como brújula diaria. Ajusta cuando cambien tus prioridades y vuelve a generar cuando lo necesites.</p>
+            <p class="text-sm text-slate-400">
+              Usa el plan como brújula diaria. Ajusta cuando cambien tus prioridades y
+              vuelve a generar cuando lo necesites.
+            </p>
           </div>
         </div>
       </section>
 
       <!-- Beneficios -->
-      <section id="beneficios" class="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8 opacity-0 translate-y-4">
-        <h2 class="text-center text-xl font-semibold text-white sm:text-2xl">Diseñado para personas reales</h2>
-        <p class="mt-2 text-center text-sm text-slate-400">No necesitas ser experto en finanzas, productividad ni tecnología.</p>
+      <section
+        id="beneficios"
+        class="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8 opacity-0 translate-y-4"
+      >
+        <h2 class="text-center text-xl font-semibold text-white sm:text-2xl">
+          Diseñado para personas reales
+        </h2>
+        <p class="mt-2 text-center text-sm text-slate-400">
+          No necesitas ser experto en finanzas, productividad ni tecnología.
+        </p>
         <div class="mt-10 grid gap-6 sm:grid-cols-2">
-          <div class="flex flex-col gap-2 rounded-2xl border border-white/10 bg-[#0b1020] p-5">
-            <h3 class="text-base font-medium text-white">Un solo lugar para todo</h3>
-            <p class="text-sm text-slate-400">Dinero, tiempo, metas y hábitos en un panel claro.</p>
+          <div
+            class="flex flex-col gap-2 rounded-2xl border border-white/10 bg-[#0b1020] p-5"
+          >
+            <h3 class="text-base font-medium text-white">
+              Un solo lugar para todo
+            </h3>
+            <p class="text-sm text-slate-400">
+              Dinero, tiempo, metas y hábitos en un panel claro.
+            </p>
           </div>
-          <div class="flex flex-col gap-2 rounded-2xl border border-white/10 bg-[#0b1020] p-5">
+          <div
+            class="flex flex-col gap-2 rounded-2xl border border-white/10 bg-[#0b1020] p-5"
+          >
             <h3 class="text-base font-medium text-white">Visual y accionable</h3>
-            <p class="text-sm text-slate-400">Nada de reportes aburridos: solo pasos concretos.</p>
+            <p class="text-sm text-slate-400">
+              Nada de reportes aburridos: solo pasos concretos.
+            </p>
           </div>
-          <div class="flex flex-col gap-2 rounded-2xl border border-white/10 bg-[#0b1020] p-5">
-            <h3 class="text-base font-medium text-white">Hecho para hispanohablantes</h3>
-            <p class="text-sm text-slate-400">Lenguaje claro, sin tecnicismos innecesarios.</p>
+          <div
+            class="flex flex-col gap-2 rounded-2xl border border-white/10 bg-[#0b1020] p-5"
+          >
+            <h3 class="text-base font-medium text-white">
+              Hecho para hispanohablantes
+            </h3>
+            <p class="text-sm text-slate-400">
+              Lenguaje claro, sin tecnicismos innecesarios.
+            </p>
           </div>
-          <div class="flex flex-col gap-2 rounded-2xl border border-white/10 bg-[#0b1020] p-5">
-            <h3 class="text-base font-medium text-white">Actualizable cuando cambie tu vida</h3>
-            <p class="text-sm text-slate-400">Puedes volver a generar tu plan todas las veces que quieras.</p>
+          <div
+            class="flex flex-col gap-2 rounded-2xl border border-white/10 bg-[#0b1020] p-5"
+          >
+            <h3 class="text-base font-medium text-white">
+              Actualizable cuando cambie tu vida
+            </h3>
+            <p class="text-sm text-slate-400">
+              Puedes volver a generar tu plan todas las veces que quieras.
+            </p>
           </div>
         </div>
       </section>
 
       <!-- App -->
-      <section id="app" class="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8 opacity-0 translate-y-4">
+      <section
+        id="app"
+        class="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8 opacity-0 translate-y-4"
+      >
         <div class="space-y-2 text-center">
-          <h2 class="text-xl font-semibold text-white sm:text-2xl">Crea tu plan de vida con IA</h2>
-          <p class="text-sm text-slate-400">Llena estos campos una sola vez. Nosotros hacemos el resto.</p>
+          <h2 class="text-xl font-semibold text-white sm:text-2xl">
+            Crea tu plan de vida con IA
+          </h2>
+          <p class="text-sm text-slate-400">
+            Llena estos campos una sola vez. Nosotros hacemos el resto.
+          </p>
         </div>
         <div class="mt-10 md:grid md:grid-cols-2 md:gap-8">
           <div class="mb-6 flex flex-wrap gap-2 md:col-span-2">
@@ -216,26 +359,73 @@
               Plantilla estudiante
             </button>
           </div>
-          <form id="lifeForm" class="rounded-3xl border border-white/10 bg-white/5 p-5 sm:p-6 flex flex-col gap-4">
+          <form
+            id="lifeForm"
+            class="rounded-3xl border border-white/10 bg-white/5 p-5 sm:p-6 flex flex-col gap-4"
+          >
             <div>
-              <label for="ingresos" class="text-sm text-slate-300">Ingresos mensuales aproximados</label>
-              <input id="ingresos" name="ingresos" type="number" min="0" step="50" placeholder="Ej. 2500" class="mt-2 w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-2 text-sm text-white placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none" required />
+              <label for="ingresos" class="text-sm text-slate-300"
+                >Ingresos mensuales aproximados</label
+              >
+              <input
+                id="ingresos"
+                name="ingresos"
+                type="number"
+                min="0"
+                step="50"
+                placeholder="Ej. 2500"
+                class="mt-2 w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-2 text-sm text-white placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none"
+                required
+              />
             </div>
             <div>
-              <label for="gastos" class="text-sm text-slate-300">Gastos mensuales aproximados</label>
-              <input id="gastos" name="gastos" type="number" min="0" step="50" placeholder="Ej. 1800" class="mt-2 w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-2 text-sm text-white placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none" required />
+              <label for="gastos" class="text-sm text-slate-300"
+                >Gastos mensuales aproximados</label
+              >
+              <input
+                id="gastos"
+                name="gastos"
+                type="number"
+                min="0"
+                step="50"
+                placeholder="Ej. 1800"
+                class="mt-2 w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-2 text-sm text-white placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none"
+                required
+              />
             </div>
             <div>
               <label for="metas" class="text-sm text-slate-300">Metas principales</label>
-              <textarea id="metas" name="metas" rows="3" placeholder="Ej. salir de deudas, ahorrar para mudanza, tener más tiempo libre…" class="mt-2 w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-2 text-sm text-white placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none" required></textarea>
+              <textarea
+                id="metas"
+                name="metas"
+                rows="3"
+                placeholder="Ej. salir de deudas, ahorrar para mudanza, tener más tiempo libre…"
+                class="mt-2 w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-2 text-sm text-white placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none"
+                required
+              ></textarea>
             </div>
             <div>
-              <label for="horario" class="text-sm text-slate-300">Horario disponible</label>
-              <textarea id="horario" name="horario" rows="2" placeholder="Ej. 1 hora por las mañanas, 30 min en la noche, fines de semana…" class="mt-2 w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-2 text-sm text-white placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none" required></textarea>
+              <label for="horario" class="text-sm text-slate-300"
+                >Horario disponible</label
+              >
+              <textarea
+                id="horario"
+                name="horario"
+                rows="2"
+                placeholder="Ej. 1 hora por las mañanas, 30 min en la noche, fines de semana…"
+                class="mt-2 w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-2 text-sm text-white placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none"
+                required
+              ></textarea>
             </div>
             <div>
-              <label for="area" class="text-sm text-slate-300">Área que más quieres mejorar</label>
-              <select id="area" name="area" class="mt-2 w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-2 text-sm text-white focus:border-indigo-500 focus:outline-none">
+              <label for="area" class="text-sm text-slate-300"
+                >Área que más quieres mejorar</label
+              >
+              <select
+                id="area"
+                name="area"
+                class="mt-2 w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-2 text-sm text-white focus:border-indigo-500 focus:outline-none"
+              >
                 <option>Dinero</option>
                 <option>Tiempo</option>
                 <option>Hábitos</option>
@@ -244,57 +434,119 @@
               </select>
             </div>
             <div>
-              <label for="caos" class="text-sm text-slate-300">Nivel de caos actual</label>
-              <select id="caos" name="caos" class="mt-2 w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-2 text-sm text-white focus:border-indigo-500 focus:outline-none">
+              <label for="caos" class="text-sm text-slate-300"
+                >Nivel de caos actual</label
+              >
+              <select
+                id="caos"
+                name="caos"
+                class="mt-2 w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-2 text-sm text-white focus:border-indigo-500 focus:outline-none"
+              >
                 <option>Tranquilo, solo quiero optimizar</option>
                 <option>Un poco desordenado</option>
                 <option>Siento que estoy apagando fuegos todo el tiempo</option>
               </select>
             </div>
-            <p class="text-xs text-slate-400">Todo se procesa en tu navegador. No guardamos tus datos.</p>
-            <button type="submit" class="mt-2 inline-flex w-full items-center justify-center rounded-full bg-indigo-500 px-4 py-2.5 text-sm font-medium shadow-lg shadow-indigo-500/30 transition hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-50">
+            <p class="text-xs text-slate-400">
+              Todo se procesa en tu navegador. No guardamos tus datos.
+            </p>
+            <button
+              type="submit"
+              class="mt-2 inline-flex w-full items-center justify-center rounded-full bg-indigo-500 px-4 py-2.5 text-sm font-medium shadow-lg shadow-indigo-500/30 transition hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-50"
+            >
               Generar mi plan con IA
             </button>
-            <p id="loadingIndicator" class="mt-2 hidden text-xs text-indigo-300">Analizando tu vida…</p>
-            <p id="formError" class="hidden text-xs text-rose-300">Completa los campos obligatorios.</p>
+            <p id="loadingIndicator" class="mt-2 hidden text-xs text-indigo-300">
+              Analizando tu vida…
+            </p>
+            <p id="formError" class="hidden text-xs text-rose-300">
+              Completa los campos obligatorios.
+            </p>
           </form>
-          <div class="mt-8 flex flex-col gap-4 rounded-3xl border border-indigo-500/40 bg-gradient-to-b from-indigo-500/20 via-[#050816] to-[#050816] p-5 sm:p-6 md:mt-0">
+          <div
+            class="mt-8 flex flex-col gap-4 rounded-3xl border border-indigo-500/40 bg-gradient-to-b from-indigo-500/20 via-[#050816] to-[#050816] p-5 sm:p-6 md:mt-0"
+          >
             <div>
               <h3 class="text-lg font-semibold text-white">Tu plan generado</h3>
-              <p class="text-sm text-slate-400">Completa el formulario y aquí aparecerá tu plan personalizado.</p>
+              <p class="text-sm text-slate-400">
+                Completa el formulario y aquí aparecerá tu plan personalizado.
+              </p>
             </div>
             <div class="space-y-4">
               <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
                 <p class="text-xs uppercase text-slate-400">Resumen financiero</p>
-                <div id="planFinanzas" class="mt-2 text-sm text-slate-200">Aquí verás tu resumen financiero.</div>
+                <div
+                  id="planFinanzas"
+                  class="mt-2 text-sm text-slate-200"
+                >
+                  Aquí verás tu resumen financiero.
+                </div>
               </div>
               <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
                 <p class="text-xs uppercase text-slate-400">Plan de hábitos</p>
-                <div id="planHabitos" class="mt-2 text-sm text-slate-200">Aquí verás tus hábitos recomendados.</div>
+                <div
+                  id="planHabitos"
+                  class="mt-2 text-sm text-slate-200"
+                >
+                  Aquí verás tus hábitos recomendados.
+                </div>
               </div>
               <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
                 <p class="text-xs uppercase text-slate-400">Horario sugerido</p>
-                <div id="planHorario" class="mt-2 text-sm text-slate-200">Aquí aparecerá una propuesta de horario.</div>
+                <div
+                  id="planHorario"
+                  class="mt-2 text-sm text-slate-200"
+                >
+                  Aquí aparecerá una propuesta de horario.
+                </div>
               </div>
               <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p class="text-xs uppercase text-slate-400">Prioridades de los próximos 7 días</p>
-                <div id="planSieteDias" class="mt-2 text-sm text-slate-200">Aquí tendrás tus prioridades inmediatas.</div>
+                <p class="text-xs uppercase text-slate-400">
+                  Prioridades de los próximos 7 días
+                </p>
+                <div
+                  id="planSieteDias"
+                  class="mt-2 text-sm text-slate-200"
+                >
+                  Aquí tendrás tus prioridades inmediatas.
+                </div>
               </div>
             </div>
+            <div class="flex justify-end">
+              <button
+                id="copySummaryBtn"
+                type="button"
+                class="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-4 py-1 text-xs font-medium text-slate-100 transition hover:bg-white/10"
+              >
+                Copiar resumen
+              </button>
+            </div>
+            <p
+              id="copySummaryMessage"
+              class="hidden text-right text-xs text-emerald-300"
+            >
+              Resumen copiado al portapapeles
+            </p>
             <div class="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
               <div>
                 <p class="text-xs uppercase text-slate-400">Guardar este plan</p>
-                <p class="text-xs text-slate-400">Asigna un nombre y guárdalo solo en tu navegador.</p>
+                <p class="text-xs text-slate-400">
+                  Asigna un nombre y guárdalo solo en tu navegador.
+                </p>
               </div>
               <div class="space-y-2">
-                <label for="planName" class="text-sm text-slate-300">Nombre del plan</label>
+                <label for="planName" class="text-sm text-slate-300"
+                  >Nombre del plan</label
+                >
                 <input
                   id="planName"
                   type="text"
                   placeholder="Ej. Plan marzo"
                   class="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-2 text-sm text-white placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none"
                 />
-                <p id="planNameError" class="hidden text-xs text-rose-300">Por favor ingresa un nombre.</p>
+                <p id="planNameError" class="hidden text-xs text-rose-300">
+                  Por favor ingresa un nombre.
+                </p>
               </div>
               <button
                 id="savePlanBtn"
@@ -306,10 +558,17 @@
             <div class="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
               <div>
                 <p class="text-xs uppercase text-slate-400">Planes guardados</p>
-                <p class="text-xs text-slate-400">Puedes guardarlos, cargarlos o eliminarlos cuando quieras.</p>
+                <p class="text-xs text-slate-400">
+                  Puedes guardarlos, cargarlos o eliminarlos cuando quieras.
+                </p>
               </div>
-              <div id="savedPlansList" class="space-y-3 text-sm text-slate-200">
-                <p class="text-slate-400">Todavía no has guardado ningún plan.</p>
+              <div
+                id="savedPlansList"
+                class="space-y-3 text-sm text-slate-200"
+              >
+                <p class="text-slate-400">
+                  Todavía no has guardado ningún plan.
+                </p>
               </div>
             </div>
           </div>
@@ -317,71 +576,122 @@
       </section>
 
       <!-- Planes -->
-      <section id="planes" class="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8 opacity-0 translate-y-4">
+      <section
+        id="planes"
+        class="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8 opacity-0 translate-y-4"
+      >
         <div class="space-y-2 text-center">
-          <h2 class="text-xl font-semibold text-white sm:text-2xl">Planes simples para empezar</h2>
-          <p class="text-sm text-slate-400">Comienza gratis, y si te sirve, pasa al plan PRO.</p>
+          <h2 class="text-xl font-semibold text-white sm:text-2xl">
+            Planes simples para empezar
+          </h2>
+          <p class="text-sm text-slate-400">
+            Comienza gratis, y si te sirve, pasa al plan PRO.
+          </p>
         </div>
         <div class="mt-10 grid gap-6 sm:grid-cols-2">
-          <div class="rounded-3xl border border-white/10 bg-[#0b1020] p-6 shadow-xl transition hover:scale-[1.01]">
+          <div
+            class="rounded-3xl border border-white/10 bg-[#0b1020] p-6 shadow-xl transition hover:scale-[1.01]"
+          >
             <p class="text-sm text-slate-400">Plan Gratis</p>
             <p class="mt-2 text-3xl font-semibold text-white">$0</p>
-            <p class="mt-1 text-sm text-slate-400">Crea tantos planes como quieras, manualmente.</p>
+            <p class="mt-1 text-sm text-slate-400">
+              Crea tantos planes como quieras, manualmente.
+            </p>
             <ul class="mt-4 space-y-2 text-sm text-slate-300">
               <li>• Generación de plan básico</li>
               <li>• Secciones de finanzas, hábitos y horario</li>
               <li>• Sin necesidad de tarjeta</li>
             </ul>
-            <button class="mt-6 w-full rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white hover:bg-white/10">Empezar gratis</button>
+            <button
+              class="mt-6 w-full rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white hover:bg-white/10"
+            >
+              Empezar gratis
+            </button>
           </div>
-          <div class="rounded-3xl border border-indigo-500/70 bg-[#0b1020] p-6 shadow-2xl shadow-indigo-900/50 transition hover:scale-[1.02]">
-            <div class="inline-flex items-center gap-2 rounded-full border border-indigo-500/40 bg-indigo-500/10 px-3 py-1 text-xs text-indigo-200">Recomendado</div>
+          <div
+            class="rounded-3xl border border-indigo-500/70 bg-[#0b1020] p-6 shadow-2xl shadow-indigo-900/50 transition hover:scale-[1.02]"
+          >
+            <div
+              class="inline-flex items-center gap-2 rounded-full border border-indigo-500/40 bg-indigo-500/10 px-3 py-1 text-xs text-indigo-200"
+            >
+              Recomendado
+            </div>
             <p class="mt-3 text-sm text-slate-400">Plan PRO (placeholder)</p>
             <p class="mt-2 text-3xl font-semibold text-white">$9 / mes</p>
-            <p class="mt-1 text-sm text-slate-400">Ideal si quieres llevar tu organización al siguiente nivel.</p>
+            <p class="mt-1 text-sm text-slate-400">
+              Ideal si quieres llevar tu organización al siguiente nivel.
+            </p>
             <ul class="mt-4 space-y-2 text-sm text-slate-300">
               <li>• Historial de planes (próximamente)</li>
               <li>• Modos avanzados de enfoque (próximamente)</li>
               <li>• Soporte prioritario (próximamente)</li>
             </ul>
-            <button class="mt-6 w-full rounded-full bg-indigo-500 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-400">Unirme a la lista de espera</button>
+            <button
+              class="mt-6 w-full rounded-full bg-indigo-500 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-400"
+            >
+              Unirme a la lista de espera
+            </button>
           </div>
         </div>
       </section>
 
       <!-- FAQ -->
-      <section class="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8 opacity-0 translate-y-4">
+      <section
+        class="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8 opacity-0 translate-y-4"
+      >
         <div class="space-y-2 text-center">
-          <h2 class="text-xl font-semibold text-white sm:text-2xl">Preguntas frecuentes</h2>
+          <h2 class="text-xl font-semibold text-white sm:text-2xl">
+            Preguntas frecuentes
+          </h2>
         </div>
         <div class="mt-8 space-y-4">
           <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
-            <button class="faq-toggle flex w-full items-center justify-between text-left text-sm font-medium text-white">
+            <button
+              class="faq-toggle flex w-full items-center justify-between text-left text-sm font-medium text-white"
+            >
               ¿Esto reemplaza a un asesor financiero o terapeuta?
               <span class="text-xl">+</span>
             </button>
-            <p class="faq-content mt-2 hidden text-sm text-slate-400">No. AI Life Organizer es una guía práctica para ayudarte a organizarte. Para decisiones profesionales siempre consulta especialistas.</p>
+            <p class="faq-content mt-2 hidden text-sm text-slate-400">
+              No. AI Life Organizer es una guía práctica para ayudarte a organizarte.
+              Para decisiones profesionales siempre consulta especialistas.
+            </p>
           </div>
           <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
-            <button class="faq-toggle flex w-full items-center justify-between text-left text-sm font-medium text-white">
+            <button
+              class="faq-toggle flex w-full items-center justify-between text-left text-sm font-medium text-white"
+            >
               ¿Dónde se guardan mis datos?
               <span class="text-xl">+</span>
             </button>
-            <p class="faq-content mt-2 hidden text-sm text-slate-400">Todo se procesa localmente en tu navegador. No enviamos tu información a servidores externos.</p>
+            <p class="faq-content mt-2 hidden text-sm text-slate-400">
+              Todo se procesa localmente en tu navegador. No enviamos tu información a
+              servidores externos.
+            </p>
           </div>
           <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
-            <button class="faq-toggle flex w-full items-center justify-between text-left text-sm font-medium text-white">
+            <button
+              class="faq-toggle flex w-full items-center justify-between text-left text-sm font-medium text-white"
+            >
               ¿Puedo usarlo si gano en efectivo?
               <span class="text-xl">+</span>
             </button>
-            <p class="faq-content mt-2 hidden text-sm text-slate-400">Claro. Solo ingresa tus montos aproximados en moneda local y el plan se adapta.</p>
+            <p class="faq-content mt-2 hidden text-sm text-slate-400">
+              Claro. Solo ingresa tus montos aproximados en moneda local y el plan se
+              adapta.
+            </p>
           </div>
           <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
-            <button class="faq-toggle flex w-full items-center justify-between text-left text-sm font-medium text-white">
+            <button
+              class="faq-toggle flex w-full items-center justify-between text-left text-sm font-medium text-white"
+            >
               ¿Funciona si trabajo por turnos?
               <span class="text-xl">+</span>
             </button>
-            <p class="faq-content mt-2 hidden text-sm text-slate-400">Sí. Describe tus horarios disponibles y generaremos bloques flexibles para tus prioridades.</p>
+            <p class="faq-content mt-2 hidden text-sm text-slate-400">
+              Sí. Describe tus horarios disponibles y generaremos bloques flexibles para
+              tus prioridades.
+            </p>
           </div>
         </div>
       </section>
@@ -389,19 +699,22 @@
 
     <!-- Footer -->
     <footer class="border-t border-white/10 bg-black/30">
-      <div class="mx-auto flex max-w-6xl flex-col justify-between gap-2 px-4 py-6 text-xs text-slate-500 sm:flex-row sm:px-6 lg:px-8">
+      <div
+        class="mx-auto flex max-w-6xl flex-col justify-between gap-2 px-4 py-6 text-xs text-slate-500 sm:flex-row sm:px-6 lg:px-8"
+      >
         <p id="footerYear">© AI Life Organizer. Creado con cariño.</p>
         <div class="flex gap-4">
-          <a href="#" class="hover:text-slate-300">Aviso de privacidad (placeholder)</a>
+          <a href="#" class="hover:text-slate-300"
+            >Aviso de privacidad (placeholder)</a
+          >
           <a href="#" class="hover:text-slate-300">Términos (placeholder)</a>
         </div>
       </div>
     </footer>
 
     <script>
-      // Encapsular toda la lógica para no contaminar el scope global
       (() => {
-        // Referencias globales del DOM utilizadas en distintas funciones
+        // --- Referencias al DOM ---
         const footerYearEl = document.getElementById("footerYear");
         const mobileMenuButton = document.getElementById("mobileMenuButton");
         const mobileMenu = document.getElementById("mobileMenu");
@@ -416,15 +729,17 @@
         const planNameError = document.getElementById("planNameError");
         const savePlanBtn = document.getElementById("savePlanBtn");
         const savedPlansList = document.getElementById("savedPlansList");
+        const copySummaryBtn = document.getElementById("copySummaryBtn");
+        const copySummaryMessage = document.getElementById("copySummaryMessage");
 
         const STORAGE_KEY = "aiLifeOrganizerPlans";
         let savedPlans = {};
         let lastGeneratedPlan = null;
+        let copyMessageTimeoutId = null;
 
         // --- Utilidades generales ---
 
         const setFooterYear = () => {
-          // Mostrar siempre el año actual en el pie de página
           const currentYear = new Date().getFullYear();
           footerYearEl.textContent = `© ${currentYear} AI Life Organizer. Creado con cariño.`;
         };
@@ -436,37 +751,50 @@
               const targetId = anchor.getAttribute("href");
               if (targetId.length > 1) {
                 event.preventDefault();
-                document.querySelector(targetId)?.scrollIntoView({ behavior: "smooth" });
+                document
+                  .querySelector(targetId)
+                  ?.scrollIntoView({ behavior: "smooth" });
               }
             });
           });
         };
 
         const animateSectionsOnLoad = () => {
-          // Aplicar animaciones de entrada progresivas al cargar la página
+          // Animaciones de entrada al cargar
           window.addEventListener("load", () => {
-            document.querySelectorAll(".opacity-0.translate-y-4").forEach((section, index) => {
-              setTimeout(() => {
-                section.classList.remove("opacity-0", "translate-y-4");
-                section.classList.add("opacity-100", "translate-y-0", "transition", "duration-700");
-              }, index * 150);
-            });
+            document
+              .querySelectorAll(".opacity-0.translate-y-4")
+              .forEach((section, index) => {
+                setTimeout(() => {
+                  section.classList.remove("opacity-0", "translate-y-4");
+                  section.classList.add(
+                    "opacity-100",
+                    "translate-y-0",
+                    "transition",
+                    "duration-700"
+                  );
+                }, index * 150);
+              });
           });
         };
 
         const initMobileMenu = () => {
-          // Mostrar u ocultar el menú móvil según la interacción del usuario
+          // Mostrar u ocultar el menú móvil
           mobileMenuButton.addEventListener("click", () => {
             mobileMenu.classList.toggle("hidden");
           });
+
           document.addEventListener("click", (event) => {
-            if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
+            if (
+              !mobileMenu.contains(event.target) &&
+              !mobileMenuButton.contains(event.target)
+            ) {
               mobileMenu.classList.add("hidden");
             }
           });
         };
 
-        // --- Gestión de mensajes de error ---
+        // --- Gestión de mensajes de error del formulario ---
 
         const showFormError = (message) => {
           formErrorEl.textContent = message;
@@ -486,6 +814,87 @@
           planNameError.classList.remove("hidden");
         };
 
+        // --- Copiar resumen al portapapeles ---
+
+        const showCopySummaryMessage = () => {
+          if (copyMessageTimeoutId) {
+            clearTimeout(copyMessageTimeoutId);
+          }
+          copySummaryMessage.classList.remove("hidden");
+          copyMessageTimeoutId = setTimeout(() => {
+            copySummaryMessage.classList.add("hidden");
+          }, 2500);
+        };
+
+        const buildSummaryText = () => {
+          const sections = [
+            {
+              title: "Resumen financiero",
+              content: planFinanzasEl.innerText.trim(),
+            },
+            {
+              title: "Plan de hábitos",
+              content: planHabitosEl.innerText.trim(),
+            },
+            {
+              title: "Horario sugerido",
+              content: planHorarioEl.innerText.trim(),
+            },
+            {
+              title: "Prioridades 7 días",
+              content: planSieteDiasEl.innerText.trim(),
+            },
+          ];
+
+          return sections
+            .map(
+              ({ title, content }) =>
+                `${title}:\n${content || "Sin información disponible"}`
+            )
+            .join("\n\n");
+        };
+
+        const fallbackCopyToClipboard = (text) => {
+          const textarea = document.createElement("textarea");
+          textarea.value = text;
+          textarea.setAttribute("readonly", "");
+          textarea.style.position = "fixed";
+          textarea.style.top = "-9999px";
+          document.body.appendChild(textarea);
+          textarea.select();
+          try {
+            document.execCommand("copy");
+            showCopySummaryMessage();
+          } catch (error) {
+            console.error("No se pudo copiar el resumen", error);
+          } finally {
+            document.body.removeChild(textarea);
+          }
+        };
+
+        const copySummary = async () => {
+          const summaryText = buildSummaryText();
+
+          if (navigator?.clipboard?.writeText) {
+            try {
+              await navigator.clipboard.writeText(summaryText);
+              showCopySummaryMessage();
+              return;
+            } catch (error) {
+              console.warn(
+                "Fallo al copiar con navigator.clipboard, intentando fallback",
+                error
+              );
+            }
+          }
+
+          fallbackCopyToClipboard(summaryText);
+        };
+
+        if (copySummaryBtn) {
+          copySummaryBtn.addEventListener("click", copySummary);
+        }
+
         // --- Persistencia y renderizado de planes ---
 
         const persistPlans = () => {
@@ -495,7 +904,8 @@
         const renderSavedPlans = () => {
           const planNames = Object.keys(savedPlans);
           if (planNames.length === 0) {
-            savedPlansList.innerHTML = '<p class="text-slate-400">Todavía no has guardado ningún plan.</p>';
+            savedPlansList.innerHTML =
+              '<p class="text-slate-400">Todavía no has guardado ningún plan.</p>';
             return;
           }
 
@@ -516,7 +926,6 @@
         };
 
         const loadPlansFromStorage = () => {
-          // Recuperar los planes guardados desde localStorage
           try {
             const stored = localStorage.getItem(STORAGE_KEY);
             savedPlans = stored ? JSON.parse(stored) : {};
@@ -527,7 +936,6 @@
         };
 
         const updatePlanOutputs = (outputs) => {
-          // Refrescar todas las secciones del plan generado
           planFinanzasEl.innerHTML = outputs.finanzas;
           planHabitosEl.innerHTML = outputs.habitos;
           planHorarioEl.innerHTML = outputs.horario;
@@ -537,7 +945,6 @@
         // --- Manejo del formulario ---
 
         const getFormValues = () => {
-          // Reunir todos los valores del formulario en un solo objeto
           const ingresosRaw = document.getElementById("ingresos").value.trim();
           const gastosRaw = document.getElementById("gastos").value.trim();
           return {
@@ -546,14 +953,15 @@
             ingresos: Number(ingresosRaw) || 0,
             gastos: Number(gastosRaw) || 0,
             metas: document.getElementById("metas").value.trim(),
-            horarioDisponible: document.getElementById("horario").value.trim(),
+            horarioDisponible: document
+              .getElementById("horario")
+              .value.trim(),
             areaMejorar: document.getElementById("area").value,
             nivelCaos: document.getElementById("caos").value,
           };
         };
 
         const validateFormValues = ({ ingresosRaw, gastosRaw }) => {
-          // Validar campos críticos antes de simular la IA
           if (!ingresosRaw && !gastosRaw) {
             return "Ingresa tus ingresos y gastos para generar el plan.";
           }
@@ -567,7 +975,7 @@
         };
 
         const fillFormInputs = (inputs) => {
-          // Permitir precargar plantillas o planes guardados sin duplicar lógica
+          // Usado por plantillas y por planes guardados
           document.getElementById("ingresos").value = inputs.ingresos;
           document.getElementById("gastos").value = inputs.gastos;
           document.getElementById("metas").value = inputs.metas;
@@ -576,17 +984,25 @@
           document.getElementById("caos").value = inputs.caos;
         };
 
-        const buildPlanOutputs = ({ ingresos, gastos, metas, horarioDisponible, areaMejorar, nivelCaos }) => {
-          // Generar los textos del plan en función de las respuestas
+        const buildPlanOutputs = ({
+          ingresos,
+          gastos,
+          metas,
+          horarioDisponible,
+          areaMejorar,
+          nivelCaos,
+        }) => {
           const margen = ingresos - gastos;
           let finanzasMensaje = "";
 
           if (margen > 200) {
             finanzasMensaje = `Tienes un margen mensual aproximado de ${margen.toLocaleString()} unidades. Reserva el 20-30% para tus metas clave: ${metas}. Usa sobres digitales para no tocar ese monto.`;
           } else if (margen >= -100 && margen <= 200) {
-            finanzasMensaje = "Tu margen mensual es casi nulo. El primer objetivo será recortar gastos variables y reconstruir tu espacio de maniobra. Añade revisiones semanales de 15 minutos.";
+            finanzasMensaje =
+              "Tu margen mensual es casi nulo. El primer objetivo será recortar gastos variables y reconstruir tu espacio de maniobra. Añade revisiones semanales de 15 minutos.";
           } else {
-            finanzasMensaje = "Actualmente tus gastos superan tus ingresos. El plan se centrará en estabilizar y recortar. Identifica 2 gastos innecesarios y congélalos este mes.";
+            finanzasMensaje =
+              "Actualmente tus gastos superan tus ingresos. El plan se centrará en estabilizar y recortar. Identifica 2 gastos innecesarios y congélalos este mes.";
           }
 
           const habitosBase = [
@@ -600,9 +1016,10 @@
             habitosBase.push("Bloque semanal para cuidado personal");
           }
 
-          const horarioSugerido = areaMejorar === "Tiempo"
-            ? "Bloques de enfoque de 45 minutos por las mañanas y sesión de descarga mental al final del día."
-            : `Usa tu horario disponible (${horarioDisponible}) para bloques cortos pero consistentes. Reserva uno para revisar metas: ${metas}.`;
+          const horarioSugerido =
+            areaMejorar === "Tiempo"
+              ? "Bloques de enfoque de 45 minutos por las mañanas y sesión de descarga mental al final del día."
+              : `Usa tu horario disponible (${horarioDisponible}) para bloques cortos pero consistentes. Reserva uno para revisar metas: ${metas}.`;
 
           const prioridades = [];
           if (areaMejorar === "Dinero") {
@@ -615,24 +1032,33 @@
             prioridades.push("Diseñar ritual de inicio de día de 10 minutos");
             prioridades.push("Usar recordatorios visuales para cada hábito");
           } else {
-            prioridades.push("Definir victoria semanal en dinero, tiempo y energía");
-            prioridades.push("Compartir tu plan con alguien de confianza");
+            prioridades.push(
+              "Definir victoria semanal en dinero, tiempo y energía"
+            );
+            prioridades.push(
+              "Compartir tu plan con alguien de confianza"
+            );
           }
 
           if (nivelCaos === "Siento que estoy apagando fuegos todo el tiempo") {
-            prioridades.push("Respirar profundo antes de responder a urgencias");
+            prioridades.push(
+              "Respirar profundo antes de responder a urgencias"
+            );
           }
 
           return {
             finanzas: `<ul class="list-disc space-y-2 pl-5"><li>${finanzasMensaje}</li><li>Activa alertas de gasto en tu banco para mantenerte dentro del plan.</li></ul>`,
-            habitos: `<ul class="list-disc space-y-2 pl-5">${habitosBase.map((habito) => `<li>${habito}</li>`).join("")}</ul>`,
+            habitos: `<ul class="list-disc space-y-2 pl-5">${habitosBase
+              .map((habito) => `<li>${habito}</li>`)
+              .join("")}</ul>`,
             horario: `<p class="font-medium text-white">Horario ideal</p><p class="text-slate-300">${horarioSugerido}</p>`,
-            sieteDias: `<ul class="list-disc space-y-2 pl-5">${prioridades.map((item) => `<li>${item}</li>`).join("")}</ul>`,
+            sieteDias: `<ul class="list-disc space-y-2 pl-5">${prioridades
+              .map((item) => `<li>${item}</li>`)
+              .join("")}</ul>`,
           };
         };
 
         const saveLastPlan = (outputs, inputs) => {
-          // Guardar la última generación en memoria para permitir persistirla
           lastGeneratedPlan = {
             inputs: { ...inputs },
             outputs: { ...outputs },
@@ -640,7 +1066,6 @@
         };
 
         const simulatePlanGeneration = (formValues) => {
-          // Simular un retardo antes de mostrar los resultados
           loadingIndicator.classList.remove("hidden");
           const outputs = buildPlanOutputs(formValues);
           setTimeout(() => {
@@ -659,7 +1084,6 @@
         };
 
         const handleFormSubmit = (event) => {
-          // Validar y generar el plan cuando se envía el formulario
           event.preventDefault();
           const formValues = getFormValues();
           const validationMessage = validateFormValues(formValues);
@@ -671,10 +1095,9 @@
           simulatePlanGeneration(formValues);
         };
 
-        // --- Eventos ---
+        // --- Plantillas (chips) ---
 
         const initTemplateChips = () => {
-          // Permitir rellenar el formulario con plantillas predefinidas
           document.querySelectorAll(".template-chip").forEach((chip) => {
             chip.addEventListener("click", () => {
               fillFormInputs({
@@ -683,15 +1106,18 @@
                 metas: chip.dataset.metas || "",
                 horario: chip.dataset.horario || "",
                 area: chip.dataset.area || "Dinero",
-                caos: chip.dataset.caos || "Tranquilo, solo quiero optimizar",
+                caos:
+                  chip.dataset.caos ||
+                  "Tranquilo, solo quiero optimizar",
               });
               hideFormError();
             });
           });
         };
 
+        // --- Guardar / cargar / eliminar planes ---
+
         const initPlanSaving = () => {
-          // Guardar planes en localStorage con validaciones básicas
           savePlanBtn.addEventListener("click", () => {
             const desiredName = planNameInput.value.trim();
 
@@ -743,14 +1169,17 @@
           });
         };
 
+        // --- FAQ ---
+
         const initFaqAccordion = () => {
-          // Mostrar u ocultar cada respuesta de la sección de FAQ
           document.querySelectorAll(".faq-toggle").forEach((button) => {
             button.addEventListener("click", () => {
               const content = button.nextElementSibling;
               content.classList.toggle("hidden");
               const icon = button.querySelector("span");
-              icon.textContent = content.classList.contains("hidden") ? "+" : "-";
+              icon.textContent = content.classList.contains("hidden")
+                ? "+"
+                : "-";
             });
           });
         };
