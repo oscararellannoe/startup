@@ -60,7 +60,7 @@
             "name": "¿Dónde se guardan mis planes?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Tus planes se guardan únicamente en tu navegador mediante almacenamiento local. Nadie más puede verlos."
+              "text": "Tus planes se guardan en tu navegador y, si inicias sesión, se sincronizan en la nube privada de Supabase para que solo tú puedas acceder."
             }
           },
           {
@@ -98,14 +98,19 @@
           <div class="flex items-center gap-3">
             <div class="hidden flex-col text-right text-xs text-slate-300 sm:flex" id="authUserBadge">
               <span class="text-[11px] uppercase tracking-[0.2em] text-slate-500">Sesión activa</span>
-              <span class="font-medium text-white">Hola, <span id="authEmailDisplay"></span></span>
+              <span class="font-medium text-white">Sesión: <span id="authEmailDisplay"></span></span>
             </div>
             <button
-              id="authTrigger"
+              id="loginTrigger"
               type="button"
               aria-haspopup="dialog"
               class="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-slate-200 transition hover:bg-white/10"
             >Iniciar sesión</button>
+            <button
+              id="signupTrigger"
+              type="button"
+              class="inline-flex items-center justify-center rounded-full border border-indigo-500/40 bg-indigo-500/10 px-4 py-2 text-sm text-indigo-200 transition hover:bg-indigo-500/20"
+            >Crear cuenta</button>
             <button
               id="logoutButton"
               type="button"
@@ -406,7 +411,9 @@
                     placeholder="Nombre del plan"
                     class="w-full rounded-2xl border border-white/10 bg-transparent px-4 py-2 text-sm text-white focus:border-indigo-400 focus:outline-none"
                   />
-                  <p id="planNameError" class="hidden text-xs text-red-300"></p>
+                  <p id="planSaveMessage" class="text-xs text-slate-400">
+                    Tus planes se guardan en este dispositivo. Inicia sesión para sincronizarlos en la nube.
+                  </p>
                   <button
                     id="savePlan"
                     type="button"
@@ -416,11 +423,30 @@
               </div>
 
               <div class="rounded-3xl border border-white/10 bg-[#050816] p-6">
-                <div class="flex items-center justify-between">
-                  <h4 class="text-lg font-semibold text-white">Planes guardados</h4>
+                <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h4 class="text-lg font-semibold text-white">Planes guardados</h4>
+                    <p class="text-sm text-slate-400">Accede desde aquí a tus planes locales o sincronizados.</p>
+                  </div>
+                  <span
+                    id="cloudSyncBadge"
+                    class="hidden rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300"
+                  >Sincronizado con la nube</span>
                 </div>
-                <div id="savedPlansList" class="mt-4 space-y-3 text-sm text-slate-300">
-                  <p class="text-sm text-slate-400">Todavía no has guardado ningún plan.</p>
+                <div class="mt-6 space-y-8">
+                  <div>
+                    <p class="text-sm font-semibold text-white">Guardados en este dispositivo</p>
+                    <div id="localPlansList" class="mt-3 space-y-3 text-sm text-slate-300">
+                      <p class="text-sm text-slate-400">Todavía no has guardado ningún plan local.</p>
+                    </div>
+                  </div>
+                  <div id="cloudPlansSection" class="hidden">
+                    <div class="flex items-center justify-between gap-3">
+                      <p class="text-sm font-semibold text-white">Guardados en la nube</p>
+                      <p id="cloudPlansStatus" class="text-xs text-slate-400"></p>
+                    </div>
+                    <div id="cloudPlansList" class="mt-3 space-y-3 text-sm text-slate-300"></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -565,7 +591,7 @@
                 <span class="text-indigo-300">+</span>
               </button>
               <div id="faq-2" class="faq-content hidden border-t border-white/5 px-6 py-4 text-sm text-slate-300">
-                Tus planes se guardan únicamente en tu navegador mediante almacenamiento local. Nadie más puede verlos.
+                Tus planes viven en tu navegador y, si inicias sesión, también se sincronizan de forma privada en la nube de Supabase.
               </div>
             </div>
             <div class="rounded-3xl border border-white/10 bg-[#050816]">
@@ -598,51 +624,31 @@
       </footer>
     </div>
 
-    <!-- Modal lista de espera PRO -->
-    <div
-      id="authModalOverlay"
-      class="fixed inset-0 z-40 hidden items-center justify-center bg-black/60 p-4"
-    >
-      <div
-        id="authModal"
-        role="dialog"
-        aria-modal="true"
-        class="max-w-md w-full rounded-3xl border border-white/10 bg-[#050816] p-6 shadow-2xl"
-      >
-        <div class="flex items-center justify-between gap-4">
+    <!-- Modal iniciar sesión -->
+    <div id="loginModal" class="fixed inset-0 z-40 hidden items-center justify-center bg-black/60 p-4">
+      <div role="dialog" aria-modal="true" class="w-full max-w-md rounded-3xl border border-white/10 bg-[#050816] p-6 shadow-2xl">
+        <div class="flex items-start justify-between gap-4">
           <div>
-            <p class="text-xs uppercase tracking-[0.3em] text-indigo-300">Acceso privado</p>
-            <h3 class="text-xl font-semibold text-white">Inicia sesión o crea tu cuenta</h3>
+            <p class="text-xs uppercase tracking-[0.3em] text-indigo-300">Acceso</p>
+            <h3 class="text-xl font-semibold text-white">Inicia sesión</h3>
           </div>
-          <button id="authClose" class="text-slate-400 transition hover:text-white" aria-label="Cerrar modal">✕</button>
+          <button data-close-login class="text-slate-400 transition hover:text-white" aria-label="Cerrar modal">✕</button>
         </div>
-        <div class="mt-4 flex gap-2 rounded-2xl border border-white/5 bg-white/5 p-1 text-sm">
-          <button
-            type="button"
-            data-auth-tab="login"
-            class="auth-tab flex-1 rounded-2xl bg-white/10 px-3 py-2 font-medium text-white"
-          >Iniciar sesión</button>
-          <button
-            type="button"
-            data-auth-tab="register"
-            class="auth-tab flex-1 rounded-2xl px-3 py-2 font-medium text-slate-400 hover:text-white"
-          >Crear cuenta</button>
-        </div>
-        <form id="authForm" class="mt-6 space-y-4">
+        <form id="loginForm" class="mt-6 space-y-4">
           <div>
-            <label for="authEmail" class="text-sm text-slate-300">Correo electrónico</label>
+            <label for="loginEmail" class="text-sm text-slate-300">Correo electrónico</label>
             <input
-              id="authEmail"
+              id="loginEmail"
               type="email"
               required
               class="mt-2 w-full rounded-2xl border border-white/10 bg-transparent px-4 py-2 text-white focus:border-indigo-400 focus:outline-none"
-              placeholder="tucorreo@email.com"
+              placeholder="tu@correo.com"
             />
           </div>
           <div>
-            <label for="authPassword" class="text-sm text-slate-300">Contraseña</label>
+            <label for="loginPassword" class="text-sm text-slate-300">Contraseña</label>
             <input
-              id="authPassword"
+              id="loginPassword"
               type="password"
               required
               class="mt-2 w-full rounded-2xl border border-white/10 bg-transparent px-4 py-2 text-white focus:border-indigo-400 focus:outline-none"
@@ -650,21 +656,74 @@
             />
           </div>
           <button
-            id="authSubmit"
             type="submit"
             class="inline-flex w-full items-center justify-center rounded-full bg-indigo-500 px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-indigo-500/30 transition hover:scale-[1.02] hover:bg-indigo-400 active:scale-[0.98]"
           >Iniciar sesión</button>
-          <p id="authError" class="hidden text-xs text-red-300"></p>
-          <p id="authSuccess" class="hidden text-xs text-emerald-300"></p>
+          <p id="loginError" class="text-xs text-rose-300"></p>
+          <p class="text-xs text-slate-400">
+            ¿No tienes cuenta?
+            <button type="button" id="openRegisterLink" class="text-indigo-300 underline underline-offset-2">Crear una ahora</button>
+          </p>
           <button
             type="button"
-            id="authCancel"
-            class="mt-2 inline-flex w-full items-center justify-center rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-slate-200 transition hover:bg-white/10"
+            data-close-login
+            class="inline-flex w-full items-center justify-center rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-slate-200 transition hover:bg-white/10"
           >Cerrar</button>
         </form>
       </div>
     </div>
 
+    <!-- Modal crear cuenta -->
+    <div id="registerModal" class="fixed inset-0 z-40 hidden items-center justify-center bg-black/60 p-4">
+      <div role="dialog" aria-modal="true" class="w-full max-w-md rounded-3xl border border-white/10 bg-[#050816] p-6 shadow-2xl">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs uppercase tracking-[0.3em] text-indigo-300">Bienvenida</p>
+            <h3 class="text-xl font-semibold text-white">Crea tu cuenta</h3>
+          </div>
+          <button data-close-register class="text-slate-400 transition hover:text-white" aria-label="Cerrar modal">✕</button>
+        </div>
+        <form id="registerForm" class="mt-6 space-y-4">
+          <div>
+            <label for="registerEmail" class="text-sm text-slate-300">Correo electrónico</label>
+            <input
+              id="registerEmail"
+              type="email"
+              required
+              class="mt-2 w-full rounded-2xl border border-white/10 bg-transparent px-4 py-2 text-white focus:border-indigo-400 focus:outline-none"
+              placeholder="tu@correo.com"
+            />
+          </div>
+          <div>
+            <label for="registerPassword" class="text-sm text-slate-300">Contraseña</label>
+            <input
+              id="registerPassword"
+              type="password"
+              required
+              class="mt-2 w-full rounded-2xl border border-white/10 bg-transparent px-4 py-2 text-white focus:border-indigo-400 focus:outline-none"
+              placeholder="********"
+            />
+          </div>
+          <button
+            type="submit"
+            class="inline-flex w-full items-center justify-center rounded-full bg-indigo-500 px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-indigo-500/30 transition hover:scale-[1.02] hover:bg-indigo-400 active:scale-[0.98]"
+          >Crear cuenta</button>
+          <p id="registerError" class="text-xs text-rose-300"></p>
+          <p id="registerSuccess" class="text-xs text-emerald-300"></p>
+          <p class="text-xs text-slate-400">
+            ¿Ya tienes cuenta?
+            <button type="button" id="openLoginLink" class="text-indigo-300 underline underline-offset-2">Inicia sesión aquí</button>
+          </p>
+          <button
+            type="button"
+            data-close-register
+            class="inline-flex w-full items-center justify-center rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-slate-200 transition hover:bg-white/10"
+          >Cerrar</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal lista de espera PRO -->
     <div id="waitlist-modal" class="fixed inset-0 z-40 hidden items-center justify-center bg-black/60 p-4">
       <div class="max-w-md w-full rounded-3xl border border-white/10 bg-[#050816] p-6 shadow-2xl">
         <div class="flex items-start justify-between">
@@ -701,30 +760,25 @@
 
     <script>
       (() => {
-        // --- Supabase config (el usuario reemplaza valores reales) ---
-        const SUPABASE_URL = "https://TU-PROJECT-ID.supabase.co"; // TODO: reemplazar por el real
-        const SUPABASE_ANON_KEY = "TU-ANON-KEY"; // TODO: reemplazar por el real
+        // Configuración real de Supabase para el modo navegador
+        const SUPABASE_URL = "https://esbdlhqdiglixupjgqqh.supabase.co";
+        const SUPABASE_ANON_KEY =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzYmRsaHFkaWdsaXh1cGpncXFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyNzU2NTYsImV4cCI6MjA3ODg1MTY1Nn0.GM2UEug_Zo3BiJgdNiq_yJccwEbb_rZqPJ4fAOvpKs0";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        const isSupabaseConfigured =
-          !SUPABASE_URL.includes('TU-PROJECT-ID') && !SUPABASE_ANON_KEY.includes('TU-ANON-KEY');
-        if (!isSupabaseConfigured) {
-          console.info('Configura SUPABASE_URL y SUPABASE_ANON_KEY para activar el modo con cuenta.');
-        }
 
-        // Supabase - Tablas sugeridas:
-        //
-        // 1) Tabla "plans":
-        //    - id: uuid (primary key, default uuid_generate_v4())
-        //    - user_id: uuid (FK a auth.users.id)
-        //    - name: text
-        //    - inputs_json: jsonb  // { ingresos, gastos, metas, horarioDisponible, areaMejorar, nivelCaos }
-        //    - outputs_json: jsonb // { planFinanzas, planHabitos, planHorario, planSieteDias }
-        //    - created_at: timestamptz (default now())
-        //    - updated_at: timestamptz (default now())
-        //
-        // El usuario debe crear esta tabla manualmente en Supabase (SQL o UI).
+        // Estado global
+        let currentUser = null;
+        let lastGeneratedPlan = null;
+        let localPlans = [];
+        let cloudPlans = [];
+        let isLoadingCloudPlans = false;
+        let planMessageTimeout = null;
 
-        // Selectores globales
+        // Claves de almacenamiento
+        const plansStorageKey = 'aiLifeOrganizerPlans';
+        const waitlistStorageKey = 'aiLifeOrganizerWaitlist';
+
+        // Referencias de interfaz
         const navLinks = document.querySelectorAll('.nav-link');
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -735,57 +789,71 @@
         const planHorario = document.getElementById('planHorario');
         const planSiete = document.getElementById('planSiete');
         const planNameInput = document.getElementById('planName');
-        const planNameError = document.getElementById('planNameError');
-        const savePlanBtn = document.getElementById('savePlan');
-        const savedPlansContainer = document.getElementById('savedPlansList');
+        const planSaveButton = document.getElementById('savePlan');
+        const planSaveMessage = document.getElementById('planSaveMessage');
+        const localPlansList = document.getElementById('localPlansList');
+        const cloudPlansSection = document.getElementById('cloudPlansSection');
+        const cloudPlansList = document.getElementById('cloudPlansList');
+        const cloudPlansStatus = document.getElementById('cloudPlansStatus');
+        const cloudSyncBadge = document.getElementById('cloudSyncBadge');
         const copySummaryBtn = document.getElementById('copySummary');
         const copyStatus = document.getElementById('copyStatus');
         const templateChips = document.querySelectorAll('.template-chip');
         const waitlistModal = document.getElementById('waitlist-modal');
         const openWaitlistBtn = document.getElementById('open-waitlist');
         const closeWaitlistBtn = document.getElementById('close-waitlist');
+        const waitlistCancelBtn = document.getElementById('waitlist-cancel');
         const waitlistForm = document.getElementById('waitlist-form');
         const waitlistEmail = document.getElementById('waitlist-email');
         const waitlistMessage = document.getElementById('waitlist-message');
-        const waitlistCancelBtn = document.getElementById('waitlist-cancel');
-        const authTrigger = document.getElementById('authTrigger');
+        const loginTrigger = document.getElementById('loginTrigger');
+        const signupTrigger = document.getElementById('signupTrigger');
+        const logoutButton = document.getElementById('logoutButton');
         const authUserBadge = document.getElementById('authUserBadge');
         const authEmailDisplay = document.getElementById('authEmailDisplay');
-        const logoutButton = document.getElementById('logoutButton');
-        const authModalOverlay = document.getElementById('authModalOverlay');
-        const authTabs = document.querySelectorAll('[data-auth-tab]');
-        const authForm = document.getElementById('authForm');
-        const authEmail = document.getElementById('authEmail');
-        const authPassword = document.getElementById('authPassword');
-        const authSubmit = document.getElementById('authSubmit');
-        const authError = document.getElementById('authError');
-        const authSuccess = document.getElementById('authSuccess');
-        const authClose = document.getElementById('authClose');
-        const authCancel = document.getElementById('authCancel');
+        const loginModal = document.getElementById('loginModal');
+        const registerModal = document.getElementById('registerModal');
+        const loginForm = document.getElementById('loginForm');
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginError = document.getElementById('loginError');
+        const registerForm = document.getElementById('registerForm');
+        const registerEmail = document.getElementById('registerEmail');
+        const registerPassword = document.getElementById('registerPassword');
+        const registerError = document.getElementById('registerError');
+        const registerSuccess = document.getElementById('registerSuccess');
+        const loginCloseButtons = document.querySelectorAll('[data-close-login]');
+        const registerCloseButtons = document.querySelectorAll('[data-close-register]');
+        const openRegisterLink = document.getElementById('openRegisterLink');
+        const openLoginLink = document.getElementById('openLoginLink');
+        const footerYear = document.getElementById('year');
 
-        const plansStorageKey = 'aiLifeOrganizerPlans';
-        const waitlistStorageKey = 'aiLifeOrganizerWaitlist';
-        let savedPlans = [];
-        let lastGeneratedPlan = null;
-        let currentUser = null;
-        let authMode = 'login';
-        let planListenersReady = false;
-
-        const updateBodyModalState = () => {
-          const waitlistVisible = waitlistModal && !waitlistModal.classList.contains('hidden');
-          const authVisible = authModalOverlay && !authModalOverlay.classList.contains('hidden');
-          if (waitlistVisible || authVisible) {
-            document.body.classList.add('modal-open');
-          } else {
-            document.body.classList.remove('modal-open');
-          }
+        const defaultOutputs = {
+          planFinanzas: planFinanzas?.textContent || '',
+          planHabitos: planHabitos?.textContent || '',
+          planHorario: planHorario?.textContent || '',
+          planSiete: planSiete?.textContent || '',
         };
 
-        // --- Utilidades ---
+        const escapeHtml = (value = '') =>
+          (value || '')
+            .toString()
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+
+        const updateBodyModalState = () => {
+          const modals = [loginModal, registerModal, waitlistModal];
+          const isOpen = modals.some((modal) => modal && !modal.classList.contains('hidden'));
+          document.body.classList.toggle('modal-open', isOpen);
+        };
+
+        // Utilidades generales
         const initFooterYear = () => {
-          const yearEl = document.getElementById('year');
-          if (yearEl) {
-            yearEl.textContent = new Date().getFullYear();
+          if (footerYear) {
+            footerYear.textContent = new Date().getFullYear();
           }
         };
 
@@ -795,7 +863,39 @@
           element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         };
 
-        // --- Navegación y animaciones ---
+        const showPlanMessage = (message, variant = 'info', persistent = false) => {
+          if (!planSaveMessage) return;
+          planSaveMessage.textContent = message;
+          planSaveMessage.classList.remove('text-rose-300', 'text-emerald-300', 'text-slate-300', 'text-slate-400');
+          const variantClass =
+            variant === 'success'
+              ? 'text-emerald-300'
+              : variant === 'error'
+              ? 'text-rose-300'
+              : 'text-slate-300';
+          planSaveMessage.classList.add(variantClass);
+          if (!persistent) {
+            if (planMessageTimeout) {
+              clearTimeout(planMessageTimeout);
+            }
+            planMessageTimeout = window.setTimeout(() => {
+              setPlanDefaultMessage();
+            }, 4000);
+          } else if (planMessageTimeout) {
+            clearTimeout(planMessageTimeout);
+            planMessageTimeout = null;
+          }
+        };
+
+        const setPlanDefaultMessage = () => {
+          const defaultMessage = currentUser
+            ? 'Tus planes se sincronizarán en la nube al guardarlos.'
+            : 'Tus planes se guardan en este dispositivo. Inicia sesión para sincronizarlos en la nube.';
+          const defaultVariant = currentUser ? 'success' : 'info';
+          showPlanMessage(defaultMessage, defaultVariant, true);
+        };
+
+        // Animaciones y navegación
         const initSmoothScroll = () => {
           navLinks.forEach((link) => {
             link.addEventListener('click', (event) => {
@@ -803,8 +903,8 @@
               if (href && href.startsWith('#')) {
                 event.preventDefault();
                 smoothScrollTo(href);
-                mobileMenu.classList.add('hidden');
-                mobileMenuButton.setAttribute('aria-expanded', 'false');
+                mobileMenu?.classList.add('hidden');
+                mobileMenuButton?.setAttribute('aria-expanded', 'false');
               }
             });
           });
@@ -835,6 +935,7 @@
         };
 
         const initMobileMenu = () => {
+          if (!mobileMenuButton || !mobileMenu) return;
           mobileMenuButton.addEventListener('click', () => {
             const isHidden = mobileMenu.classList.toggle('hidden');
             mobileMenuButton.setAttribute('aria-expanded', (!isHidden).toString());
@@ -854,7 +955,7 @@
               const content = document.getElementById(contentId);
               const isExpanded = button.getAttribute('aria-expanded') === 'true';
               button.setAttribute('aria-expanded', (!isExpanded).toString());
-              content.classList.toggle('hidden');
+              content?.classList.toggle('hidden');
               const indicator = button.querySelector('span');
               if (indicator) {
                 indicator.textContent = isExpanded ? '+' : '−';
@@ -863,7 +964,7 @@
           });
         };
 
-        // --- Plantillas rápidas ---
+        // Plantillas y formulario
         const fillFormInputs = ({ ingresos, gastos, metas, horario, area, caos }) => {
           document.getElementById('ingresos').value = ingresos || '';
           document.getElementById('gastos').value = gastos || '';
@@ -884,12 +985,11 @@
                 area: chip.dataset.area,
                 caos: chip.dataset.caos,
               });
-              formError.classList.add('hidden');
+              formError?.classList.add('hidden');
             });
           });
         };
 
-        // --- Generación del plan ---
         const collectFormValues = () => ({
           ingresos: document.getElementById('ingresos').value.trim(),
           gastos: document.getElementById('gastos').value.trim(),
@@ -904,7 +1004,7 @@
             return 'Por favor ingresa tus ingresos y gastos estimados.';
           }
           if (Number(values.ingresos) < Number(values.gastos)) {
-            return 'Tus gastos superan los ingresos. Informa si es correcto para ajustar el plan.';
+            return 'Tus gastos superan tus ingresos. Confirma que sea correcto para ajustar el plan.';
           }
           return '';
         };
@@ -915,36 +1015,37 @@
           const ahorro = Math.max(ingresosNum - gastosNum, 0);
           const porcentajeAhorro = ingresosNum ? Math.round((ahorro / ingresosNum) * 100) : 0;
 
-          const planFinanzasText = `Destina ${porcentajeAhorro}% (${ahorro.toLocaleString('es-ES')} unidades) a un fondo objetivo y revisa las categorías variables cada viernes para alinear tu foco en ${values.areaMejorar.toLowerCase()}.`;
+          const planFinanzasText = `Destina ${porcentajeAhorro}% (${ahorro.toLocaleString('es-ES')} unidades) a un fondo objetivo y revisa tus gastos variables cada viernes para proteger tu foco en ${values.areaMejorar.toLowerCase()}.`;
 
-          const planHabitosText = `Integra hábitos ancla relacionados con "${values.metas || 'tus metas clave'}": check-in financiero de 10 min, ritual de energía al despertar y cierre de jornada con respiraciones para bajar el nivel de caos (${values.nivelCaos.toLowerCase()}).`;
+          const planHabitosText = `Conecta hábitos ancla con "${values.metas || 'tus metas clave'}": chequeo financiero de 10 min, ritual de energía al despertar y cierre diario con respiraciones profundas para gestionar el nivel de caos (${values.nivelCaos}).`;
 
-          const planHorarioText = `Aprovecha el horario disponible descrito (${values.horarioDisponible || 'bloques libres'}) para crear bloques temáticos: foco profundo al iniciar el día, ejecución táctica por la tarde y revisión ligera nocturna.`;
+          const planHorarioText = `Reserva bloques profundos donde tengas más energía (ej. ${values.horarioDisponible || 'mañanas frescas'}) y usa intervalos de 90 minutos con descansos breves para ejecutar tareas de alto impacto.`;
 
-          const planSieteText = `Próximos 7 días: 1) Consolidar presupuesto simplificado, 2) Reservar bloques irrenunciables para ${values.areaMejorar.toLowerCase()}, 3) Dedicar una micro victoria diaria alineada a ${values.metas || 'tu objetivo principal'}.`;
+          const planSieteText = `Prioriza 3 acciones: (1) revisar flujo de dinero, (2) ejecutar un hábito clave diario y (3) reservar un bloque semanal para planificación. Repite durante 7 días y registra aprendizajes.`;
 
           return {
             planFinanzas: planFinanzasText,
             planHabitos: planHabitosText,
             planHorario: planHorarioText,
-            planSieteDias: planSieteText,
+            planSiete: planSieteText,
           };
         };
 
-        const updatePlanOutputs = (outputs) => {
-          planFinanzas.textContent = outputs.planFinanzas || 'Completa el formulario para recibir tu resumen financiero.';
-          planHabitos.textContent = outputs.planHabitos || 'Aquí verás los hábitos que sostendrán tu plan.';
-          planHorario.textContent = outputs.planHorario || 'Bloques de tiempo aparecerán tras generar tu plan.';
-          planSiete.textContent = outputs.planSieteDias || 'Tus próximos pasos clave se mostrarán aquí.';
+        const updatePlanOutputs = (outputs = {}) => {
+          if (planFinanzas) planFinanzas.textContent = outputs.planFinanzas || defaultOutputs.planFinanzas;
+          if (planHabitos) planHabitos.textContent = outputs.planHabitos || defaultOutputs.planHabitos;
+          if (planHorario) planHorario.textContent = outputs.planHorario || defaultOutputs.planHorario;
+          if (planSiete) planSiete.textContent = outputs.planSiete || defaultOutputs.planSiete;
         };
 
         const initFormPlan = () => {
+          if (!lifeForm) return;
           lifeForm.addEventListener('submit', (event) => {
             event.preventDefault();
             const values = collectFormValues();
-            const validationMessage = validateValues(values);
-            if (validationMessage) {
-              formError.textContent = validationMessage;
+            const errorMessage = validateValues(values);
+            if (errorMessage) {
+              formError.textContent = errorMessage;
               formError.classList.remove('hidden');
               return;
             }
@@ -952,482 +1053,603 @@
             const outputs = generatePlanOutputs(values);
             updatePlanOutputs(outputs);
             lastGeneratedPlan = { inputs: values, outputs };
-            copyStatus.classList.add('hidden');
+            showPlanMessage('Plan generado correctamente. Dale un nombre y guárdalo.', 'success');
+          });
+
+          planSaveButton?.addEventListener('click', () => {
+            handlePlanSave();
           });
         };
 
-        // --- Copiar resumen ---
+        // Copiar resumen
         const initCopySummary = () => {
+          if (!copySummaryBtn || !copyStatus) return;
           copySummaryBtn.addEventListener('click', async () => {
+            copyStatus.classList.add('hidden');
             if (!lastGeneratedPlan) {
               copyStatus.textContent = 'Genera un plan antes de copiar el resumen.';
               copyStatus.classList.remove('hidden');
               copyStatus.classList.remove('text-emerald-300');
-              copyStatus.classList.add('text-red-300');
+              copyStatus.classList.add('text-rose-300');
               return;
             }
-            const summaryText = `Mi plan generado por AI Life Organizer
-
-Resumen financiero: ${planFinanzas.textContent}
-
-Plan de hábitos: ${planHabitos.textContent}
-
-Horario sugerido: ${planHorario.textContent}
-
-Prioridades 7 días: ${planSiete.textContent}`;
+            const summary = `Resumen financiero: ${lastGeneratedPlan.outputs.planFinanzas}\nPlan de hábitos: ${lastGeneratedPlan.outputs.planHabitos}\nHorario sugerido: ${lastGeneratedPlan.outputs.planHorario}\nPrioridades 7 días: ${lastGeneratedPlan.outputs.planSiete}`;
             try {
-              await navigator.clipboard.writeText(summaryText);
-              copyStatus.textContent = 'Resumen copiado al portapapeles.';
-              copyStatus.classList.remove('hidden');
-              copyStatus.classList.remove('text-red-300');
+              await navigator.clipboard.writeText(summary);
+              copyStatus.textContent = 'Resumen copiado ✅';
+              copyStatus.classList.remove('text-rose-300');
               copyStatus.classList.add('text-emerald-300');
-              setTimeout(() => copyStatus.classList.add('hidden'), 3000);
             } catch (error) {
-              copyStatus.textContent = 'No se pudo copiar el resumen. Intenta manualmente.';
-              copyStatus.classList.remove('hidden');
+              copyStatus.textContent = 'No pudimos copiar el resumen.';
               copyStatus.classList.remove('text-emerald-300');
-              copyStatus.classList.add('text-red-300');
+              copyStatus.classList.add('text-rose-300');
             }
+            copyStatus.classList.remove('hidden');
+            setTimeout(() => copyStatus.classList.add('hidden'), 2500);
           });
         };
-
-        // --- Planes guardados ---
-        const renderSavedPlans = () => {
-          savedPlansContainer.innerHTML = '';
-          if (!savedPlans.length) {
-            const emptyMessage = currentUser
-              ? 'Aún no tienes planes guardados en la nube.'
-              : 'Todavía no has guardado ningún plan.';
-            savedPlansContainer.innerHTML = `<p class="text-sm text-slate-400">${emptyMessage}</p>`;
-            return;
-          }
-          savedPlans.forEach((plan) => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'rounded-2xl border border-white/10 bg-white/5 p-4';
-            wrapper.innerHTML = `
-              <div class="flex items-center justify-between text-sm text-white">
-                <p class="font-medium">${plan.name}</p>
-                <div class="flex gap-2">
-                  <button data-action="load" data-name="${encodeURIComponent(plan.name)}" class="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs text-slate-200 transition hover:bg-white/10">Cargar</button>
-                  <button data-action="delete" data-name="${encodeURIComponent(plan.name)}" class="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs text-slate-200 transition hover:bg-white/10">Eliminar</button>
-                </div>
-              </div>`;
-            savedPlansContainer.appendChild(wrapper);
-          });
-        };
-
-        const persistPlans = () => {
-          if (currentUser) return;
-          localStorage.setItem(plansStorageKey, JSON.stringify(savedPlans));
-        };
-
-        const loadPlansFromLocalStorage = () => {
+        // Planes locales
+        const loadLocalPlansFromStorage = () => {
           try {
             const stored = JSON.parse(localStorage.getItem(plansStorageKey)) || [];
-            return Array.isArray(stored) ? stored : [];
+            localPlans = Array.isArray(stored) ? stored : [];
           } catch (error) {
-            return [];
+            localPlans = [];
           }
         };
 
-        const syncLocalPlansFromStorage = () => {
-          if (currentUser) return;
-          savedPlans = loadPlansFromLocalStorage();
-          renderSavedPlans();
-        };
-
-        const showPlanMessage = (message, variant = 'error') => {
-          planNameError.textContent = message;
-          planNameError.classList.remove('hidden');
-          if (variant === 'success') {
-            planNameError.classList.remove('text-red-300');
-            planNameError.classList.add('text-emerald-300');
-          } else {
-            planNameError.classList.remove('text-emerald-300');
-            planNameError.classList.add('text-red-300');
+        const persistLocalPlans = () => {
+          try {
+            localStorage.setItem(plansStorageKey, JSON.stringify(localPlans));
+          } catch (error) {
+            console.error('No pudimos guardar el plan en este dispositivo.', error);
           }
         };
 
-        const clearPlanMessage = () => {
-          planNameError.classList.add('hidden');
+        const renderLocalPlans = () => {
+          if (!localPlansList) return;
+          if (!localPlans.length) {
+            localPlansList.innerHTML = '<p class="text-sm text-slate-400">Todavía no has guardado ningún plan local.</p>';
+            return;
+          }
+          localPlansList.innerHTML = localPlans
+            .map(
+              (plan) => `
+                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p class="font-medium text-white">${escapeHtml(plan.name)}</p>
+                      <p class="text-xs text-slate-400">Disponible solo en este dispositivo</p>
+                    </div>
+                    <div class="flex gap-2 text-xs">
+                      <button
+                        data-local-action="load"
+                        data-name="${encodeURIComponent(plan.name)}"
+                        class="rounded-full border border-white/15 px-3 py-1 text-slate-200 transition hover:bg-white/10"
+                      >Cargar</button>
+                      <button
+                        data-local-action="delete"
+                        data-name="${encodeURIComponent(plan.name)}"
+                        class="rounded-full border border-white/15 px-3 py-1 text-slate-200 transition hover:bg-white/10"
+                      >Eliminar</button>
+                    </div>
+                  </div>
+                </div>`
+            )
+            .join('');
         };
 
         const savePlanLocally = (planName) => {
-          const existingIndex = savedPlans.findIndex((plan) => plan.name === planName);
-          const planData = { name: planName, ...lastGeneratedPlan };
+          if (!lastGeneratedPlan) return;
+          const payload = {
+            name: planName,
+            inputs: { ...lastGeneratedPlan.inputs },
+            outputs: { ...lastGeneratedPlan.outputs },
+          };
+          const existingIndex = localPlans.findIndex((plan) => plan.name === planName);
           if (existingIndex >= 0) {
-            savedPlans[existingIndex] = planData;
+            localPlans[existingIndex] = payload;
           } else {
-            savedPlans.push(planData);
+            localPlans.unshift(payload);
           }
-          persistPlans();
-          renderSavedPlans();
-          showPlanMessage('Plan guardado en este dispositivo.', 'success');
-          setTimeout(clearPlanMessage, 2500);
+          persistLocalPlans();
+          renderLocalPlans();
         };
 
-        const handlePlanSave = async () => {
-          const planName = (planNameInput.value || '').trim();
-          if (!planName) {
-            showPlanMessage('Por favor ingresa un nombre.');
-            return;
-          }
-          if (!lastGeneratedPlan) {
-            showPlanMessage('Genera un plan antes de guardarlo.');
-            return;
-          }
-          clearPlanMessage();
-          if (!currentUser) {
-            savePlanLocally(planName);
-            return;
-          }
-          try {
-            await savePlanToDatabase(currentUser.id, planName, lastGeneratedPlan);
-            const existingIndex = savedPlans.findIndex((plan) => plan.name === planName);
-            const planData = { name: planName, ...lastGeneratedPlan };
-            if (existingIndex >= 0) {
-              savedPlans[existingIndex] = planData;
-            } else {
-              savedPlans.unshift(planData);
-            }
-            renderSavedPlans();
-            showPlanMessage('Plan sincronizado en la nube.', 'success');
-            setTimeout(clearPlanMessage, 2500);
-          } catch (error) {
-            console.error('Error al guardar el plan remoto', error);
-            showPlanMessage('No pudimos guardar el plan en la nube. Intenta más tarde.');
-          }
-        };
-
-        const handleSavedPlanAction = async (event) => {
-          const button = event.target.closest('button[data-action]');
+        const handleLocalPlanAction = (event) => {
+          const button = event.target.closest('button[data-local-action]');
           if (!button) return;
-          const action = button.dataset.action;
+          const action = button.dataset.localAction;
           const planName = decodeURIComponent(button.dataset.name || '');
-          const planData = savedPlans.find((plan) => plan.name === planName);
+          const planData = localPlans.find((plan) => plan.name === planName);
           if (action === 'load' && planData) {
-            const inputs = planData.inputs || {};
             fillFormInputs({
-              ingresos: inputs.ingresos,
-              gastos: inputs.gastos,
-              metas: inputs.metas,
-              horario: inputs.horarioDisponible,
-              area: inputs.areaMejorar,
-              caos: inputs.nivelCaos,
+              ingresos: planData.inputs?.ingresos,
+              gastos: planData.inputs?.gastos,
+              metas: planData.inputs?.metas,
+              horario: planData.inputs?.horarioDisponible,
+              area: planData.inputs?.areaMejorar,
+              caos: planData.inputs?.nivelCaos,
             });
             updatePlanOutputs(planData.outputs || {});
-            lastGeneratedPlan = { inputs, outputs: planData.outputs || {} };
+            lastGeneratedPlan = { inputs: planData.inputs, outputs: planData.outputs };
             planNameInput.value = planData.name;
-            showPlanMessage('Plan cargado correctamente.', 'success');
-            setTimeout(clearPlanMessage, 2500);
+            showPlanMessage('Plan cargado desde este dispositivo.', 'success');
+            return;
           }
           if (action === 'delete') {
-            if (!currentUser) {
-              savedPlans = savedPlans.filter((plan) => plan.name !== planName);
-              persistPlans();
-              renderSavedPlans();
-              return;
+            localPlans = localPlans.filter((plan) => plan.name !== planName);
+            persistLocalPlans();
+            renderLocalPlans();
+            showPlanMessage('Plan eliminado de este dispositivo.', 'info');
+          }
+        };
+
+        const initLocalPlans = () => {
+          loadLocalPlansFromStorage();
+          renderLocalPlans();
+          localPlansList?.addEventListener('click', handleLocalPlanAction);
+        };
+
+        // Planes en la nube
+        const updateCloudStatus = (message = '', variant = 'muted') => {
+          if (!cloudPlansStatus) return;
+          cloudPlansStatus.textContent = message;
+          cloudPlansStatus.classList.remove('text-rose-300', 'text-emerald-300', 'text-slate-400');
+          const className =
+            variant === 'error' ? 'text-rose-300' : variant === 'success' ? 'text-emerald-300' : 'text-slate-400';
+          cloudPlansStatus.classList.add(className);
+        };
+
+        const formatRelativeTime = (dateString) => {
+          const date = new Date(dateString);
+          if (Number.isNaN(date.getTime())) {
+            return 'Fecha desconocida';
+          }
+          const rtf = new Intl.RelativeTimeFormat('es', { numeric: 'auto' });
+          let duration = (date.getTime() - Date.now()) / 1000;
+          let unit = 'second';
+          const divisions = [
+            { amount: 60, unit: 'minute' },
+            { amount: 60, unit: 'hour' },
+            { amount: 24, unit: 'day' },
+            { amount: 7, unit: 'week' },
+            { amount: 4.34524, unit: 'month' },
+            { amount: 12, unit: 'year' },
+          ];
+          for (const division of divisions) {
+            if (Math.abs(duration) < division.amount) {
+              break;
             }
-            try {
-              await deletePlanFromDatabase(currentUser.id, planName);
-              savedPlans = savedPlans.filter((plan) => plan.name !== planName);
-              renderSavedPlans();
-            } catch (error) {
-              console.error('Error al eliminar el plan remoto', error);
-              showPlanMessage('No pudimos eliminar el plan remoto. Intenta nuevamente.');
+            duration /= division.amount;
+            unit = division.unit;
+          }
+          return rtf.format(Math.round(duration), unit);
+        };
+
+        const setCloudSectionVisibility = () => {
+          if (!cloudPlansSection) return;
+          if (currentUser) {
+            cloudPlansSection.classList.remove('hidden');
+          } else {
+            cloudPlansSection.classList.add('hidden');
+          }
+        };
+
+        const renderCloudPlans = () => {
+          if (!cloudPlansList || !cloudPlansSection) return;
+          setCloudSectionVisibility();
+          if (!currentUser) {
+            cloudPlansList.innerHTML = '';
+            updateCloudStatus('', 'muted');
+            return;
+          }
+          if (isLoadingCloudPlans) {
+            updateCloudStatus('Cargando tus planes...', 'muted');
+            cloudPlansList.innerHTML = '<p class="text-sm text-slate-400">Cargando tus planes...</p>';
+            return;
+          }
+          if (!cloudPlans.length) {
+            updateCloudStatus('', 'muted');
+            cloudPlansList.innerHTML = '<p class="text-sm text-slate-400">Todavía no guardas planes en la nube.</p>';
+            return;
+          }
+          updateCloudStatus('', 'muted');
+          cloudPlansList.innerHTML = cloudPlans
+            .map(
+              (plan) => `
+                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p class="font-medium text-white">${escapeHtml(plan.name)}</p>
+                      <p class="text-xs text-slate-400">${formatRelativeTime(plan.created_at)}</p>
+                    </div>
+                    <div class="flex gap-2 text-xs">
+                      <button
+                        data-cloud-action="load"
+                        data-id="${plan.id}"
+                        class="rounded-full border border-white/15 px-3 py-1 text-slate-200 transition hover:bg-white/10"
+                      >Cargar</button>
+                      <button
+                        data-cloud-action="delete"
+                        data-id="${plan.id}"
+                        class="rounded-full border border-white/15 px-3 py-1 text-slate-200 transition hover:bg-white/10"
+                      >Eliminar</button>
+                    </div>
+                  </div>
+                </div>`
+            )
+            .join('');
+        };
+
+        const clearCloudPlansUI = () => {
+          cloudPlans = [];
+          isLoadingCloudPlans = false;
+          if (cloudPlansList) {
+            cloudPlansList.innerHTML = '';
+          }
+          updateCloudStatus('', 'muted');
+          cloudSyncBadge?.classList.add('hidden');
+          setCloudSectionVisibility();
+        };
+
+        const loadPlansFromSupabase = async () => {
+          if (!currentUser) return;
+          try {
+            isLoadingCloudPlans = true;
+            renderCloudPlans();
+            const { data, error } = await supabase
+              .from('plans')
+              .select('*')
+              .eq('user_id', currentUser.id)
+              .order('created_at', { ascending: false });
+            isLoadingCloudPlans = false;
+            if (error) throw error;
+            cloudPlans = (data || []).map((item) => ({
+              id: item.id,
+              name: item.name,
+              created_at: item.created_at,
+              inputs: item.inputs_json || {},
+              outputs: item.outputs_json || {},
+            }));
+            cloudSyncBadge?.classList.remove('hidden');
+            renderCloudPlans();
+          } catch (error) {
+            console.error('Error al cargar planes desde Supabase', error);
+            isLoadingCloudPlans = false;
+            updateCloudStatus('No pudimos cargar tus planes. Intenta más tarde.', 'error');
+            if (cloudPlansList) {
+              cloudPlansList.innerHTML = '<p class="text-sm text-rose-300">No pudimos cargar tus planes.</p>';
             }
           }
         };
 
-        const attachPlanListeners = () => {
-          if (planListenersReady) return;
-          savePlanBtn.addEventListener('click', () => {
-            handlePlanSave();
-          });
-          savedPlansContainer.addEventListener('click', (event) => {
-            handleSavedPlanAction(event);
-          });
-          planListenersReady = true;
-        };
-
-        const initLocalStoragePlans = () => {
-          syncLocalPlansFromStorage();
-          attachPlanListeners();
-        };
-
-        // --- Persistencia remota ---
-        const savePlanToDatabase = async (userId, planName, planData) => {
-          if (!isSupabaseConfigured) {
-            throw new Error('Configura tus credenciales de Supabase para guardar en la nube.');
+        const savePlanToSupabase = async (planName) => {
+          if (!currentUser) {
+            throw new Error('Necesitas iniciar sesión para guardar en la nube.');
           }
-          const { error } = await supabase
-            .from('plans')
-            .upsert(
-              {
-                user_id: userId,
-                name: planName,
-                inputs_json: planData.inputs,
-                outputs_json: planData.outputs,
-              },
-              { onConflict: 'user_id,name' }
-            );
+          const payload = {
+            user_id: currentUser.id,
+            name: planName,
+            inputs_json: { ...lastGeneratedPlan.inputs },
+            outputs_json: { ...lastGeneratedPlan.outputs },
+          };
+          const { data, error } = await supabase.from('plans').insert(payload).select().single();
           if (error) throw error;
+          return {
+            id: data.id,
+            name: data.name,
+            created_at: data.created_at || new Date().toISOString(),
+            inputs: data.inputs_json || {},
+            outputs: data.outputs_json || {},
+          };
         };
 
-        const loadPlansFromDatabase = async (userId) => {
-          if (!isSupabaseConfigured) {
-            throw new Error('Configura tus credenciales de Supabase para sincronizar planes.');
-          }
-          const { data, error } = await supabase
-            .from('plans')
-            .select('*')
-            .eq('user_id', userId)
-            .order('created_at', { ascending: false });
-          if (error) throw error;
-          return (data || []).map((item) => ({
-            name: item.name,
-            inputs: item.inputs_json || {},
-            outputs: item.outputs_json || {},
-          }));
-        };
-
-        const deletePlanFromDatabase = async (userId, planName) => {
-          if (!isSupabaseConfigured) {
-            throw new Error('Configura tus credenciales de Supabase para borrar planes.');
+        const deletePlanFromSupabase = async (planId) => {
+          if (!currentUser) {
+            throw new Error('Necesitas iniciar sesión para administrar la nube.');
           }
           const { error } = await supabase
             .from('plans')
             .delete()
-            .eq('user_id', userId)
-            .eq('name', planName);
+            .eq('id', planId)
+            .eq('user_id', currentUser.id);
           if (error) throw error;
         };
 
-        const initRemotePlans = async () => {
-          if (!currentUser || !isSupabaseConfigured) return;
-          try {
-            savedPlans = await loadPlansFromDatabase(currentUser.id);
-            renderSavedPlans();
-          } catch (error) {
-            console.error('Error al cargar planes remotos', error);
-            showPlanMessage('No pudimos cargar tus planes remotos. Revisa tu conexión.');
+        const handleCloudPlanAction = (event) => {
+          const button = event.target.closest('button[data-cloud-action]');
+          if (!button) return;
+          const action = button.dataset.cloudAction;
+          const planId = button.dataset.id;
+          const planData = cloudPlans.find((plan) => plan.id === planId);
+          if (action === 'load' && planData) {
+            fillFormInputs({
+              ingresos: planData.inputs?.ingresos,
+              gastos: planData.inputs?.gastos,
+              metas: planData.inputs?.metas,
+              horario: planData.inputs?.horarioDisponible,
+              area: planData.inputs?.areaMejorar,
+              caos: planData.inputs?.nivelCaos,
+            });
+            updatePlanOutputs(planData.outputs || {});
+            lastGeneratedPlan = { inputs: planData.inputs, outputs: planData.outputs };
+            planNameInput.value = planData.name;
+            showPlanMessage('Plan cargado desde la nube.', 'success');
+            return;
+          }
+          if (action === 'delete' && planId) {
+            deletePlanFromSupabase(planId)
+              .then(() => {
+                cloudPlans = cloudPlans.filter((plan) => plan.id !== planId);
+                renderCloudPlans();
+                showPlanMessage('Plan eliminado de la nube.', 'info');
+              })
+              .catch((error) => {
+                console.error('Error al eliminar plan en la nube', error);
+                showPlanMessage('No pudimos eliminar el plan remoto.', 'error');
+              });
           }
         };
 
-        // --- Autenticación ---
-        const setCurrentUser = (user) => {
-          currentUser = user;
-          if (user) {
-            authTrigger.classList.add('hidden');
-            logoutButton.classList.remove('hidden');
-            authUserBadge.classList.remove('hidden');
-            const username = (user.email || '').split('@')[0] || 'usuario';
-            authEmailDisplay.textContent = username;
-          } else {
-            authTrigger.classList.remove('hidden');
-            logoutButton.classList.add('hidden');
-            authUserBadge.classList.add('hidden');
-            authEmailDisplay.textContent = '';
+        const initCloudPlans = () => {
+          cloudPlansList?.addEventListener('click', handleCloudPlanAction);
+          setCloudSectionVisibility();
+        };
+
+        const setSavingState = (isSaving) => {
+          if (!planSaveButton) return;
+          planSaveButton.disabled = isSaving;
+          planSaveButton.classList.toggle('opacity-60', isSaving);
+        };
+
+        const handlePlanSave = async () => {
+          if (!planNameInput) return;
+          const planName = planNameInput.value.trim();
+          if (!planName) {
+            showPlanMessage('Escribe un nombre para tu plan.', 'error');
+            return;
           }
-        };
-
-        const setAuthMode = (mode) => {
-          authMode = mode;
-          authTabs.forEach((tab) => {
-            const isActive = tab.dataset.authTab === mode;
-            tab.classList.toggle('bg-white/10', isActive);
-            tab.classList.toggle('text-white', isActive);
-            tab.classList.toggle('text-slate-400', !isActive);
-          });
-          authSubmit.textContent = mode === 'login' ? 'Iniciar sesión' : 'Crear cuenta';
-        };
-
-        const resetAuthFeedback = () => {
-          authError.classList.add('hidden');
-          authSuccess.classList.add('hidden');
-        };
-
-        const openAuthModal = () => {
-          authModalOverlay.classList.remove('hidden');
-          updateBodyModalState();
-          if (authEmail) {
-            setTimeout(() => authEmail.focus(), 50);
+          if (!lastGeneratedPlan) {
+            showPlanMessage('Genera un plan antes de guardarlo.', 'error');
+            return;
           }
-        };
-
-        const closeAuthModal = () => {
-          authModalOverlay.classList.add('hidden');
-          authForm.reset();
-          resetAuthFeedback();
-          setAuthMode('login');
-          updateBodyModalState();
-        };
-
-        const handleRegister = async (email, password) => {
-          if (!isSupabaseConfigured) {
-            throw new Error('Configura tus credenciales de Supabase para crear cuentas.');
-          }
-          const { error } = await supabase.auth.signUp({ email, password });
-          if (error) throw error;
-          authSuccess.textContent = 'Te enviamos un correo para confirmar tu cuenta (modo demo).';
-          authSuccess.classList.remove('hidden');
-        };
-
-        const handleLogin = async (email, password) => {
-          if (!isSupabaseConfigured) {
-            throw new Error('Configura tus credenciales de Supabase para iniciar sesión.');
-          }
-          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-          if (error) throw error;
-          setCurrentUser(data.user);
-          await initRemotePlans();
-          authSuccess.textContent = 'Sesión iniciada. Sincronizando tus planes...';
-          authSuccess.classList.remove('hidden');
-          setTimeout(() => {
-            closeAuthModal();
-            showPlanMessage('Sesión iniciada correctamente.', 'success');
-            setTimeout(clearPlanMessage, 2500);
-          }, 800);
-        };
-
-        const handleLogout = async () => {
-          try {
-            if (isSupabaseConfigured) {
-              await supabase.auth.signOut();
-            }
-          } catch (error) {
-            console.error('Error al cerrar sesión', error);
-          } finally {
-            setCurrentUser(null);
-            syncLocalPlansFromStorage();
-            showPlanMessage('Sesión cerrada. Continúas en modo local.', 'success');
-            setTimeout(clearPlanMessage, 2500);
-          }
-        };
-
-        const getCurrentUserFromSupabase = async () => {
-          if (!isSupabaseConfigured) {
-            setCurrentUser(null);
+          savePlanLocally(planName);
+          if (!currentUser) {
+            showPlanMessage('Plan guardado localmente. Para sincronizarlo, inicia sesión.', 'info');
             return;
           }
           try {
-            const { data, error } = await supabase.auth.getUser();
-            if (error) {
-              setCurrentUser(null);
-              syncLocalPlansFromStorage();
-              return;
-            }
-            if (data?.user) {
-              setCurrentUser(data.user);
-              await initRemotePlans();
-            } else {
-              setCurrentUser(null);
-              syncLocalPlansFromStorage();
-            }
+            setSavingState(true);
+            const savedPlan = await savePlanToSupabase(planName);
+            cloudPlans = [savedPlan, ...cloudPlans.filter((plan) => plan.id !== savedPlan.id)];
+            renderCloudPlans();
+            showPlanMessage('Plan sincronizado en la nube.', 'success');
           } catch (error) {
-            console.error('Error al obtener la sesión de Supabase', error);
-            setCurrentUser(null);
-            syncLocalPlansFromStorage();
+            console.error('Error al guardar plan en la nube', error);
+            showPlanMessage('No pudimos guardar el plan en la nube. Intenta más tarde.', 'error');
+          } finally {
+            setSavingState(false);
           }
         };
 
-        const initSupabaseAuth = () => {
-          setAuthMode('login');
-          authTrigger.addEventListener('click', () => openAuthModal());
-          authClose.addEventListener('click', () => closeAuthModal());
-          authCancel.addEventListener('click', () => closeAuthModal());
-          authModalOverlay.addEventListener('click', (event) => {
-            if (event.target === authModalOverlay) {
-              closeAuthModal();
+        // Autenticación
+        const openLoginModal = () => {
+          if (!loginModal) return;
+          loginModal.classList.remove('hidden');
+          loginError.textContent = '';
+          updateBodyModalState();
+          setTimeout(() => loginEmail?.focus(), 50);
+        };
+
+        const closeLoginModal = () => {
+          if (!loginModal) return;
+          loginModal.classList.add('hidden');
+          loginForm?.reset();
+          loginError.textContent = '';
+          updateBodyModalState();
+        };
+
+        const openRegisterModal = () => {
+          if (!registerModal) return;
+          registerModal.classList.remove('hidden');
+          registerError.textContent = '';
+          registerSuccess.textContent = '';
+          updateBodyModalState();
+          setTimeout(() => registerEmail?.focus(), 50);
+        };
+
+        const closeRegisterModal = () => {
+          if (!registerModal) return;
+          registerModal.classList.add('hidden');
+          registerForm?.reset();
+          registerError.textContent = '';
+          registerSuccess.textContent = '';
+          updateBodyModalState();
+        };
+
+        const handleSignUp = async (email, password) => {
+          const { data, error } = await supabase.auth.signUp({ email, password });
+          if (error) throw error;
+          return data;
+        };
+
+        const handleSignIn = async (email, password) => {
+          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          return data;
+        };
+
+        const handleSignOut = async () => {
+          await supabase.auth.signOut();
+          currentUser = null;
+          updateAuthUI();
+          clearCloudPlansUI();
+        };
+
+        const fetchCurrentUser = async () => {
+          const { data } = await supabase.auth.getUser();
+          currentUser = data?.user || null;
+        };
+
+        const updateAuthUI = () => {
+          if (currentUser) {
+            authUserBadge?.classList.remove('hidden');
+            authEmailDisplay.textContent = currentUser.email || '';
+            loginTrigger?.classList.add('hidden');
+            signupTrigger?.classList.add('hidden');
+            logoutButton?.classList.remove('hidden');
+            cloudSyncBadge?.classList.remove('hidden');
+          } else {
+            authUserBadge?.classList.add('hidden');
+            authEmailDisplay.textContent = '';
+            loginTrigger?.classList.remove('hidden');
+            signupTrigger?.classList.remove('hidden');
+            logoutButton?.classList.add('hidden');
+            cloudSyncBadge?.classList.add('hidden');
+          }
+          setPlanDefaultMessage();
+          setCloudSectionVisibility();
+        };
+
+        const initAuthModals = () => {
+          loginTrigger?.addEventListener('click', () => openLoginModal());
+          signupTrigger?.addEventListener('click', () => openRegisterModal());
+          loginCloseButtons.forEach((button) => button.addEventListener('click', () => closeLoginModal()));
+          registerCloseButtons.forEach((button) => button.addEventListener('click', () => closeRegisterModal()));
+          loginModal?.addEventListener('click', (event) => {
+            if (event.target === loginModal) {
+              closeLoginModal();
             }
           });
-          authTabs.forEach((tab) => {
-            tab.addEventListener('click', () => setAuthMode(tab.dataset.authTab));
+          registerModal?.addEventListener('click', (event) => {
+            if (event.target === registerModal) {
+              closeRegisterModal();
+            }
           });
-          authForm.addEventListener('submit', async (event) => {
+          openRegisterLink?.addEventListener('click', () => {
+            closeLoginModal();
+            openRegisterModal();
+          });
+          openLoginLink?.addEventListener('click', () => {
+            closeRegisterModal();
+            openLoginModal();
+          });
+          logoutButton?.addEventListener('click', async () => {
+            try {
+              await handleSignOut();
+              showPlanMessage('Sesión cerrada. Continúas en modo local.', 'info');
+            } catch (error) {
+              console.error('Error al cerrar sesión', error);
+              showPlanMessage('No pudimos cerrar sesión. Intenta nuevamente.', 'error');
+            }
+          });
+
+          loginForm?.addEventListener('submit', async (event) => {
             event.preventDefault();
-            resetAuthFeedback();
-            const email = authEmail.value.trim();
-            const password = authPassword.value.trim();
+            loginError.textContent = '';
+            const email = loginEmail.value.trim();
+            const password = loginPassword.value.trim();
             if (!email || !password) {
-              authError.textContent = 'Completa correo y contraseña.';
-              authError.classList.remove('hidden');
+              loginError.textContent = 'Completa tu correo y contraseña.';
               return;
             }
             try {
-              if (authMode === 'login') {
-                await handleLogin(email, password);
-              } else {
-                await handleRegister(email, password);
-              }
+              await handleSignIn(email, password);
+              closeLoginModal();
+              showPlanMessage('Sesión iniciada. Cargando tus planes...', 'success');
             } catch (error) {
-              authError.textContent = error.message || 'Ocurrió un error al procesar tu solicitud.';
-              authError.classList.remove('hidden');
+              loginError.textContent = error.message || 'No pudimos iniciar sesión.';
             }
           });
-          logoutButton.addEventListener('click', () => handleLogout());
-          getCurrentUserFromSupabase();
-          if (isSupabaseConfigured) {
-            supabase.auth.onAuthStateChange((_event, session) => {
-              const user = session?.user || null;
-              setCurrentUser(user);
-              if (user) {
-                initRemotePlans();
-              } else {
-                syncLocalPlansFromStorage();
-              }
-            });
+
+          registerForm?.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            registerError.textContent = '';
+            registerSuccess.textContent = '';
+            const email = registerEmail.value.trim();
+            const password = registerPassword.value.trim();
+            if (!email || !password) {
+              registerError.textContent = 'Completa correo y contraseña.';
+              return;
+            }
+            try {
+              await handleSignUp(email, password);
+              registerSuccess.textContent = 'Te enviamos un correo para confirmar tu cuenta.';
+              registerForm.reset();
+            } catch (error) {
+              registerError.textContent = error.message || 'No pudimos crear tu cuenta.';
+            }
+          });
+        };
+
+        const initAuthState = async () => {
+          await fetchCurrentUser();
+          updateAuthUI();
+          if (currentUser) {
+            loadPlansFromSupabase();
+          } else {
+            clearCloudPlansUI();
           }
+          supabase.auth.onAuthStateChange((_event, session) => {
+            currentUser = session?.user || null;
+            updateAuthUI();
+            if (currentUser) {
+              loadPlansFromSupabase();
+            } else {
+              clearCloudPlansUI();
+            }
+          });
         };
 
-        // --- Modal lista de espera PRO ---
-        const openWaitlistModal = () => {
-          waitlistModal.classList.remove('hidden');
-          updateBodyModalState();
-        };
-
-        const closeWaitlistModal = () => {
-          waitlistModal.classList.add('hidden');
-          waitlistMessage.textContent = '';
-          updateBodyModalState();
-        };
-
+        // Modal lista de espera PRO
         const initProWaitlistModal = () => {
-          openWaitlistBtn.addEventListener('click', () => openWaitlistModal());
-          closeWaitlistBtn.addEventListener('click', () => closeWaitlistModal());
-          waitlistCancelBtn.addEventListener('click', () => closeWaitlistModal());
+          if (!waitlistModal) return;
+          const openModal = () => {
+            waitlistModal.classList.remove('hidden');
+            updateBodyModalState();
+            setTimeout(() => waitlistEmail?.focus(), 50);
+          };
+          const closeModal = () => {
+            waitlistModal.classList.add('hidden');
+            waitlistMessage.textContent = '';
+            updateBodyModalState();
+          };
+          openWaitlistBtn?.addEventListener('click', () => openModal());
+          closeWaitlistBtn?.addEventListener('click', () => closeModal());
+          waitlistCancelBtn?.addEventListener('click', () => closeModal());
           waitlistModal.addEventListener('click', (event) => {
             if (event.target === waitlistModal) {
-              closeWaitlistModal();
+              closeModal();
             }
           });
-          waitlistForm.addEventListener('submit', (event) => {
+          waitlistForm?.addEventListener('submit', (event) => {
             event.preventDefault();
             const email = waitlistEmail.value.trim();
             if (!email || !email.includes('@')) {
               waitlistMessage.textContent = 'Ingresa un correo válido.';
               waitlistMessage.classList.remove('text-emerald-300');
-              waitlistMessage.classList.add('text-red-300');
+              waitlistMessage.classList.add('text-rose-300');
               return;
             }
-            waitlistMessage.classList.remove('text-red-300');
+            waitlistMessage.classList.remove('text-rose-300');
             waitlistMessage.classList.add('text-emerald-300');
             try {
               const stored = JSON.parse(localStorage.getItem(waitlistStorageKey)) || [];
               stored.push({ email, date: new Date().toISOString() });
               localStorage.setItem(waitlistStorageKey, JSON.stringify(stored));
-              waitlistMessage.textContent = 'Tu correo ha sido registrado en modo demo.';
+              waitlistMessage.textContent = 'Te sumamos a la lista de espera PRO.';
               waitlistEmail.value = '';
             } catch (error) {
-              waitlistMessage.textContent = 'No pudimos guardar tu correo, intenta más tarde.';
+              waitlistMessage.textContent = 'No pudimos guardar tu correo. Intenta más tarde.';
               waitlistMessage.classList.remove('text-emerald-300');
-              waitlistMessage.classList.add('text-red-300');
+              waitlistMessage.classList.add('text-rose-300');
             }
           });
         };
 
-        // --- Inicialización ---
-        const init = () => {
+        // Inicio de la app
+        const initApp = () => {
           initFooterYear();
           initSmoothScroll();
           initSectionAnimations();
@@ -1436,13 +1658,17 @@ Prioridades 7 días: ${planSiete.textContent}`;
           initTemplates();
           initFormPlan();
           initCopySummary();
-          initLocalStoragePlans();
-          initSupabaseAuth();
+          initLocalPlans();
+          initCloudPlans();
+          initAuthModals();
+          initAuthState();
           initProWaitlistModal();
+          setPlanDefaultMessage();
         };
 
-        init();
+        initApp();
       })();
     </script>
+
   </body>
 </html>
