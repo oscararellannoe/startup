@@ -178,6 +178,44 @@
           <p class="text-sm text-slate-400">Llena estos campos una sola vez. Nosotros hacemos el resto.</p>
         </div>
         <div class="mt-10 md:grid md:grid-cols-2 md:gap-8">
+          <div class="mb-6 flex flex-wrap gap-2 md:col-span-2">
+            <button
+              type="button"
+              class="template-chip rounded-full border border-white/10 bg-white/5 px-4 py-1 text-xs text-slate-200 transition hover:bg-white/10"
+              data-ingresos="3200"
+              data-gastos="2700"
+              data-metas="Mantener el hogar organizado, ahorrar para vacaciones familiares, dedicar tiempo de calidad"
+              data-horario="30 min antes de que despierten los niños, 45 min en la noche, bloques cortos fin de semana"
+              data-area="Tiempo"
+              data-caos="Siento que estoy apagando fuegos todo el tiempo"
+            >
+              Plantilla mamá ocupada
+            </button>
+            <button
+              type="button"
+              class="template-chip rounded-full border border-white/10 bg-white/5 px-4 py-1 text-xs text-slate-200 transition hover:bg-white/10"
+              data-ingresos="5800"
+              data-gastos="4100"
+              data-metas="Escalar ventas del negocio, crear fondo de emergencia, delegar tareas repetitivas"
+              data-horario="Bloques de 2 horas por la mañana para enfoque profundo, tardes para reuniones, sábado revisión"
+              data-area="Dinero"
+              data-caos="Un poco desordenado"
+            >
+              Plantilla emprendedor
+            </button>
+            <button
+              type="button"
+              class="template-chip rounded-full border border-white/10 bg-white/5 px-4 py-1 text-xs text-slate-200 transition hover:bg-white/10"
+              data-ingresos="950"
+              data-gastos="600"
+              data-metas="Pagar universidad, tener tiempo para estudiar, mejorar hábitos de descanso"
+              data-horario="Tardes después de clases, noches cortas de repaso, sábado por la mañana"
+              data-area="Hábitos"
+              data-caos="Tranquilo, solo quiero optimizar"
+            >
+              Plantilla estudiante
+            </button>
+          </div>
           <form id="lifeForm" class="rounded-3xl border border-white/10 bg-white/5 p-5 sm:p-6 flex flex-col gap-4">
             <div>
               <label for="ingresos" class="text-sm text-slate-300">Ingresos mensuales aproximados</label>
@@ -475,6 +513,19 @@
         document.getElementById("area").value = inputs.area;
         document.getElementById("caos").value = inputs.caos;
       };
+
+      document.querySelectorAll(".template-chip").forEach((chip) => {
+        chip.addEventListener("click", () => {
+          fillFormInputs({
+            ingresos: chip.dataset.ingresos || "",
+            gastos: chip.dataset.gastos || "",
+            metas: chip.dataset.metas || "",
+            horario: chip.dataset.horario || "",
+            area: chip.dataset.area || "Dinero",
+            caos: chip.dataset.caos || "Tranquilo, solo quiero optimizar",
+          });
+        });
+      });
 
       savePlanBtn.addEventListener("click", () => {
         const desiredName = planNameInput.value.trim();
