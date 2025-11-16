@@ -256,6 +256,7 @@
               Generar mi plan con IA
             </button>
             <p id="loadingIndicator" class="mt-2 hidden text-xs text-indigo-300">Analizando tu vida…</p>
+            <p id="formError" class="hidden text-xs text-rose-300">Completa los campos obligatorios.</p>
           </form>
           <div class="mt-8 flex flex-col gap-4 rounded-3xl border border-indigo-500/40 bg-gradient-to-b from-indigo-500/20 via-[#050816] to-[#050816] p-5 sm:p-6 md:mt-0">
             <div>
@@ -398,287 +399,378 @@
     </footer>
 
     <script>
-      // Configurar año dinámico en el footer
-      const footerYearEl = document.getElementById("footerYear");
-      const currentYear = new Date().getFullYear();
-      footerYearEl.textContent = `© ${currentYear} AI Life Organizer. Creado con cariño.`;
+      // Encapsular toda la lógica para no contaminar el scope global
+      (() => {
+        // Referencias globales del DOM utilizadas en distintas funciones
+        const footerYearEl = document.getElementById("footerYear");
+        const mobileMenuButton = document.getElementById("mobileMenuButton");
+        const mobileMenu = document.getElementById("mobileMenu");
+        const lifeForm = document.getElementById("lifeForm");
+        const loadingIndicator = document.getElementById("loadingIndicator");
+        const formErrorEl = document.getElementById("formError");
+        const planFinanzasEl = document.getElementById("planFinanzas");
+        const planHabitosEl = document.getElementById("planHabitos");
+        const planHorarioEl = document.getElementById("planHorario");
+        const planSieteDiasEl = document.getElementById("planSieteDias");
+        const planNameInput = document.getElementById("planName");
+        const planNameError = document.getElementById("planNameError");
+        const savePlanBtn = document.getElementById("savePlanBtn");
+        const savedPlansList = document.getElementById("savedPlansList");
 
-      // Scroll suave para enlaces internos
-      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-        anchor.addEventListener("click", function (event) {
-          const targetId = this.getAttribute("href");
-          if (targetId.length > 1) {
-            event.preventDefault();
-            document.querySelector(targetId)?.scrollIntoView({ behavior: "smooth" });
-          }
-        });
-      });
+        const STORAGE_KEY = "aiLifeOrganizerPlans";
+        let savedPlans = {};
+        let lastGeneratedPlan = null;
 
-      // Animaciones de entrada al cargar
-      window.addEventListener("load", () => {
-        document.querySelectorAll(".opacity-0.translate-y-4").forEach((section, index) => {
-          setTimeout(() => {
-            section.classList.remove("opacity-0", "translate-y-4");
-            section.classList.add("opacity-100", "translate-y-0", "transition", "duration-700");
-          }, index * 150);
-        });
-      });
+        // --- Utilidades generales ---
 
-      // Menú móvil
-      const mobileMenuButton = document.getElementById("mobileMenuButton");
-      const mobileMenu = document.getElementById("mobileMenu");
-      mobileMenuButton.addEventListener("click", () => {
-        mobileMenu.classList.toggle("hidden");
-      });
-      document.addEventListener("click", (event) => {
-        if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
-          mobileMenu.classList.add("hidden");
-        }
-      });
-
-      // Lógica de "IA" simulada
-      const lifeForm = document.getElementById("lifeForm");
-      const loadingIndicator = document.getElementById("loadingIndicator");
-      const planFinanzasEl = document.getElementById("planFinanzas");
-      const planHabitosEl = document.getElementById("planHabitos");
-      const planHorarioEl = document.getElementById("planHorario");
-      const planSieteDiasEl = document.getElementById("planSieteDias");
-      const planNameInput = document.getElementById("planName");
-      const planNameError = document.getElementById("planNameError");
-      const savePlanBtn = document.getElementById("savePlanBtn");
-      const savedPlansList = document.getElementById("savedPlansList");
-
-      const STORAGE_KEY = "aiLifeOrganizerPlans";
-      let savedPlans = {};
-      let lastGeneratedPlan = null;
-
-      const hidePlanNameError = () => {
-        planNameError.classList.add("hidden");
-      };
-
-      const showPlanNameError = (message) => {
-        planNameError.textContent = message;
-        planNameError.classList.remove("hidden");
-      };
-
-      const persistPlans = () => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(savedPlans));
-      };
-
-      const renderSavedPlans = () => {
-        const planNames = Object.keys(savedPlans);
-        if (planNames.length === 0) {
-          savedPlansList.innerHTML = '<p class="text-slate-400">Todavía no has guardado ningún plan.</p>';
-          return;
-        }
-
-        savedPlansList.innerHTML = planNames
-          .map((name) => {
-            const encodedName = encodeURIComponent(name);
-            return `
-              <div class="flex flex-col gap-2 rounded-xl border border-white/10 bg-black/20 p-3 sm:flex-row sm:items-center sm:justify-between">
-                <p class="text-sm font-medium text-white">${name}</p>
-                <div class="flex flex-wrap gap-2 text-xs">
-                  <button data-action="load" data-name="${encodedName}" class="rounded-full border border-white/10 bg-white/5 px-3 py-1 font-medium text-white hover:bg-white/10">Cargar</button>
-                  <button data-action="delete" data-name="${encodedName}" class="rounded-full border border-white/10 bg-white/5 px-3 py-1 font-medium text-white hover:bg-white/10">Eliminar</button>
-                </div>
-              </div>
-            `;
-          })
-          .join("");
-      };
-
-      const loadPlansFromStorage = () => {
-        try {
-          const stored = localStorage.getItem(STORAGE_KEY);
-          savedPlans = stored ? JSON.parse(stored) : {};
-        } catch (error) {
-          savedPlans = {};
-        }
-        renderSavedPlans();
-      };
-
-      const updatePlanOutputs = (outputs) => {
-        planFinanzasEl.innerHTML = outputs.finanzas;
-        planHabitosEl.innerHTML = outputs.habitos;
-        planHorarioEl.innerHTML = outputs.horario;
-        planSieteDiasEl.innerHTML = outputs.sieteDias;
-      };
-
-      const fillFormInputs = (inputs) => {
-        document.getElementById("ingresos").value = inputs.ingresos;
-        document.getElementById("gastos").value = inputs.gastos;
-        document.getElementById("metas").value = inputs.metas;
-        document.getElementById("horario").value = inputs.horario;
-        document.getElementById("area").value = inputs.area;
-        document.getElementById("caos").value = inputs.caos;
-      };
-
-      document.querySelectorAll(".template-chip").forEach((chip) => {
-        chip.addEventListener("click", () => {
-          fillFormInputs({
-            ingresos: chip.dataset.ingresos || "",
-            gastos: chip.dataset.gastos || "",
-            metas: chip.dataset.metas || "",
-            horario: chip.dataset.horario || "",
-            area: chip.dataset.area || "Dinero",
-            caos: chip.dataset.caos || "Tranquilo, solo quiero optimizar",
-          });
-        });
-      });
-
-      savePlanBtn.addEventListener("click", () => {
-        const desiredName = planNameInput.value.trim();
-
-        if (!desiredName) {
-          showPlanNameError("Por favor ingresa un nombre.");
-          return;
-        }
-
-        if (!lastGeneratedPlan) {
-          showPlanNameError("Genera un plan antes de guardarlo.");
-          return;
-        }
-
-        savedPlans[desiredName] = {
-          inputs: { ...lastGeneratedPlan.inputs },
-          outputs: { ...lastGeneratedPlan.outputs },
+        const setFooterYear = () => {
+          // Mostrar siempre el año actual en el pie de página
+          const currentYear = new Date().getFullYear();
+          footerYearEl.textContent = `© ${currentYear} AI Life Organizer. Creado con cariño.`;
         };
-        persistPlans();
-        renderSavedPlans();
-        hidePlanNameError();
-      });
 
-      savedPlansList.addEventListener("click", (event) => {
-        const button = event.target.closest("button[data-action]");
-        if (!button) return;
+        const enableSmoothScroll = () => {
+          // Habilitar desplazamiento suave para enlaces internos
+          document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+            anchor.addEventListener("click", (event) => {
+              const targetId = anchor.getAttribute("href");
+              if (targetId.length > 1) {
+                event.preventDefault();
+                document.querySelector(targetId)?.scrollIntoView({ behavior: "smooth" });
+              }
+            });
+          });
+        };
 
-        const action = button.dataset.action;
-        const planName = decodeURIComponent(button.dataset.name || "");
-        const planData = savedPlans[planName];
-        if (!planData) return;
+        const animateSectionsOnLoad = () => {
+          // Aplicar animaciones de entrada progresivas al cargar la página
+          window.addEventListener("load", () => {
+            document.querySelectorAll(".opacity-0.translate-y-4").forEach((section, index) => {
+              setTimeout(() => {
+                section.classList.remove("opacity-0", "translate-y-4");
+                section.classList.add("opacity-100", "translate-y-0", "transition", "duration-700");
+              }, index * 150);
+            });
+          });
+        };
 
-        if (action === "load") {
-          fillFormInputs(planData.inputs);
-          updatePlanOutputs(planData.outputs);
-          lastGeneratedPlan = {
-            inputs: { ...planData.inputs },
-            outputs: { ...planData.outputs },
-          };
-          planNameInput.value = planName;
-          hidePlanNameError();
-        } else if (action === "delete") {
-          delete savedPlans[planName];
-          persistPlans();
+        const initMobileMenu = () => {
+          // Mostrar u ocultar el menú móvil según la interacción del usuario
+          mobileMenuButton.addEventListener("click", () => {
+            mobileMenu.classList.toggle("hidden");
+          });
+          document.addEventListener("click", (event) => {
+            if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
+              mobileMenu.classList.add("hidden");
+            }
+          });
+        };
+
+        // --- Gestión de mensajes de error ---
+
+        const showFormError = (message) => {
+          formErrorEl.textContent = message;
+          formErrorEl.classList.remove("hidden");
+        };
+
+        const hideFormError = () => {
+          formErrorEl.classList.add("hidden");
+        };
+
+        const hidePlanNameError = () => {
+          planNameError.classList.add("hidden");
+        };
+
+        const showPlanNameError = (message) => {
+          planNameError.textContent = message;
+          planNameError.classList.remove("hidden");
+        };
+
+        // --- Persistencia y renderizado de planes ---
+
+        const persistPlans = () => {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(savedPlans));
+        };
+
+        const renderSavedPlans = () => {
+          const planNames = Object.keys(savedPlans);
+          if (planNames.length === 0) {
+            savedPlansList.innerHTML = '<p class="text-slate-400">Todavía no has guardado ningún plan.</p>';
+            return;
+          }
+
+          savedPlansList.innerHTML = planNames
+            .map((name) => {
+              const encodedName = encodeURIComponent(name);
+              return `
+                <div class="flex flex-col gap-2 rounded-xl border border-white/10 bg-black/20 p-3 sm:flex-row sm:items-center sm:justify-between">
+                  <p class="text-sm font-medium text-white">${name}</p>
+                  <div class="flex flex-wrap gap-2 text-xs">
+                    <button data-action="load" data-name="${encodedName}" class="rounded-full border border-white/10 bg-white/5 px-3 py-1 font-medium text-white hover:bg-white/10">Cargar</button>
+                    <button data-action="delete" data-name="${encodedName}" class="rounded-full border border-white/10 bg-white/5 px-3 py-1 font-medium text-white hover:bg-white/10">Eliminar</button>
+                  </div>
+                </div>
+              `;
+            })
+            .join("");
+        };
+
+        const loadPlansFromStorage = () => {
+          // Recuperar los planes guardados desde localStorage
+          try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            savedPlans = stored ? JSON.parse(stored) : {};
+          } catch (error) {
+            savedPlans = {};
+          }
           renderSavedPlans();
-          if (planNameInput.value.trim() === planName) {
-            planNameInput.value = "";
-          }
-        }
-      });
+        };
 
-      lifeForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-        loadingIndicator.classList.remove("hidden");
+        const updatePlanOutputs = (outputs) => {
+          // Refrescar todas las secciones del plan generado
+          planFinanzasEl.innerHTML = outputs.finanzas;
+          planHabitosEl.innerHTML = outputs.habitos;
+          planHorarioEl.innerHTML = outputs.horario;
+          planSieteDiasEl.innerHTML = outputs.sieteDias;
+        };
 
-        const ingresos = Number(document.getElementById("ingresos").value) || 0;
-        const gastos = Number(document.getElementById("gastos").value) || 0;
-        const metas = document.getElementById("metas").value.trim();
-        const horarioDisponible = document.getElementById("horario").value.trim();
-        const areaMejorar = document.getElementById("area").value;
-        const nivelCaos = document.getElementById("caos").value;
+        // --- Manejo del formulario ---
 
-        const margen = ingresos - gastos;
-        let finanzasMensaje = "";
-
-        if (margen > 200) {
-          finanzasMensaje = `Tienes un margen mensual aproximado de ${margen.toLocaleString()} unidades. Reserva el 20-30% para tus metas clave: ${metas}. Usa sobres digitales para no tocar ese monto.`;
-        } else if (margen >= -100 && margen <= 200) {
-          finanzasMensaje = "Tu margen mensual es casi nulo. El primer objetivo será recortar gastos variables y reconstruir tu espacio de maniobra. Añade revisiones semanales de 15 minutos.";
-        } else {
-          finanzasMensaje = "Actualmente tus gastos superan tus ingresos. El plan se centrará en estabilizar y recortar. Identifica 2 gastos innecesarios y congélalos este mes.";
-        }
-
-        const habitosBase = [
-          "Revisión financiera cada domingo",
-          "Microahorro diario de $5",
-          "Chequeo de prioridades antes de dormir",
-        ];
-
-        if (areaMejorar === "Hábitos" || areaMejorar === "Energía / bienestar") {
-          habitosBase.push("Respiración consciente 2 minutos tras cada comida");
-          habitosBase.push("Bloque semanal para cuidado personal");
-        }
-
-        const horarioSugerido = areaMejorar === "Tiempo"
-          ? "Bloques de enfoque de 45 minutos por las mañanas y sesión de descarga mental al final del día."
-          : `Usa tu horario disponible (${horarioDisponible}) para bloques cortos pero consistentes. Reserva uno para revisar metas: ${metas}.`;
-
-        const prioridades = [];
-        if (areaMejorar === "Dinero") {
-          prioridades.push("Actualizar presupuesto real vs. planificado");
-          prioridades.push("Crear lista de gastos recortables esta semana");
-        } else if (areaMejorar === "Tiempo") {
-          prioridades.push("Bloquear en calendario tus horarios disponibles");
-          prioridades.push("Automatizar tareas repetitivas con plantillas");
-        } else if (areaMejorar === "Hábitos") {
-          prioridades.push("Diseñar ritual de inicio de día de 10 minutos");
-          prioridades.push("Usar recordatorios visuales para cada hábito");
-        } else {
-          prioridades.push("Definir victoria semanal en dinero, tiempo y energía");
-          prioridades.push("Compartir tu plan con alguien de confianza");
-        }
-
-        if (nivelCaos === "Siento que estoy apagando fuegos todo el tiempo") {
-          prioridades.push("Respirar profundo antes de responder a urgencias");
-        }
-
-        setTimeout(() => {
-          planFinanzasEl.innerHTML = `<ul class="list-disc space-y-2 pl-5"><li>${finanzasMensaje}</li><li>Activa alertas de gasto en tu banco para mantenerte dentro del plan.</li></ul>`;
-
-          planHabitosEl.innerHTML = `<ul class="list-disc space-y-2 pl-5">${habitosBase.map((habito) => `<li>${habito}</li>`).join("")}</ul>`;
-
-          planHorarioEl.innerHTML = `<p class="font-medium text-white">Horario ideal</p><p class="text-slate-300">${horarioSugerido}</p>`;
-
-          planSieteDiasEl.innerHTML = `<ul class="list-disc space-y-2 pl-5">${prioridades.map((item) => `<li>${item}</li>`).join("")}</ul>`;
-
-          lastGeneratedPlan = {
-            inputs: {
-              ingresos,
-              gastos,
-              metas,
-              horario: horarioDisponible,
-              area: areaMejorar,
-              caos: nivelCaos,
-            },
-            outputs: {
-              finanzas: planFinanzasEl.innerHTML,
-              habitos: planHabitosEl.innerHTML,
-              horario: planHorarioEl.innerHTML,
-              sieteDias: planSieteDiasEl.innerHTML,
-            },
+        const getFormValues = () => {
+          // Reunir todos los valores del formulario en un solo objeto
+          const ingresosRaw = document.getElementById("ingresos").value.trim();
+          const gastosRaw = document.getElementById("gastos").value.trim();
+          return {
+            ingresosRaw,
+            gastosRaw,
+            ingresos: Number(ingresosRaw) || 0,
+            gastos: Number(gastosRaw) || 0,
+            metas: document.getElementById("metas").value.trim(),
+            horarioDisponible: document.getElementById("horario").value.trim(),
+            areaMejorar: document.getElementById("area").value,
+            nivelCaos: document.getElementById("caos").value,
           };
-          hidePlanNameError();
+        };
 
-          loadingIndicator.classList.add("hidden");
-        }, 900);
-      });
-
-      loadPlansFromStorage();
-
-      // FAQ acordeón
-      document.querySelectorAll(".faq-toggle").forEach((button) => {
-        button.addEventListener("click", () => {
-          const content = button.nextElementSibling;
-          content.classList.toggle("hidden");
-          const icon = button.querySelector("span");
-          if (content.classList.contains("hidden")) {
-            icon.textContent = "+";
-          } else {
-            icon.textContent = "-";
+        const validateFormValues = ({ ingresosRaw, gastosRaw }) => {
+          // Validar campos críticos antes de simular la IA
+          if (!ingresosRaw && !gastosRaw) {
+            return "Ingresa tus ingresos y gastos para generar el plan.";
           }
-        });
-      });
+          if (!ingresosRaw) {
+            return "Ingresa tus ingresos aproximados.";
+          }
+          if (!gastosRaw) {
+            return "Ingresa tus gastos aproximados.";
+          }
+          return "";
+        };
+
+        const fillFormInputs = (inputs) => {
+          // Permitir precargar plantillas o planes guardados sin duplicar lógica
+          document.getElementById("ingresos").value = inputs.ingresos;
+          document.getElementById("gastos").value = inputs.gastos;
+          document.getElementById("metas").value = inputs.metas;
+          document.getElementById("horario").value = inputs.horario;
+          document.getElementById("area").value = inputs.area;
+          document.getElementById("caos").value = inputs.caos;
+        };
+
+        const buildPlanOutputs = ({ ingresos, gastos, metas, horarioDisponible, areaMejorar, nivelCaos }) => {
+          // Generar los textos del plan en función de las respuestas
+          const margen = ingresos - gastos;
+          let finanzasMensaje = "";
+
+          if (margen > 200) {
+            finanzasMensaje = `Tienes un margen mensual aproximado de ${margen.toLocaleString()} unidades. Reserva el 20-30% para tus metas clave: ${metas}. Usa sobres digitales para no tocar ese monto.`;
+          } else if (margen >= -100 && margen <= 200) {
+            finanzasMensaje = "Tu margen mensual es casi nulo. El primer objetivo será recortar gastos variables y reconstruir tu espacio de maniobra. Añade revisiones semanales de 15 minutos.";
+          } else {
+            finanzasMensaje = "Actualmente tus gastos superan tus ingresos. El plan se centrará en estabilizar y recortar. Identifica 2 gastos innecesarios y congélalos este mes.";
+          }
+
+          const habitosBase = [
+            "Revisión financiera cada domingo",
+            "Microahorro diario de $5",
+            "Chequeo de prioridades antes de dormir",
+          ];
+
+          if (areaMejorar === "Hábitos" || areaMejorar === "Energía / bienestar") {
+            habitosBase.push("Respiración consciente 2 minutos tras cada comida");
+            habitosBase.push("Bloque semanal para cuidado personal");
+          }
+
+          const horarioSugerido = areaMejorar === "Tiempo"
+            ? "Bloques de enfoque de 45 minutos por las mañanas y sesión de descarga mental al final del día."
+            : `Usa tu horario disponible (${horarioDisponible}) para bloques cortos pero consistentes. Reserva uno para revisar metas: ${metas}.`;
+
+          const prioridades = [];
+          if (areaMejorar === "Dinero") {
+            prioridades.push("Actualizar presupuesto real vs. planificado");
+            prioridades.push("Crear lista de gastos recortables esta semana");
+          } else if (areaMejorar === "Tiempo") {
+            prioridades.push("Bloquear en calendario tus horarios disponibles");
+            prioridades.push("Automatizar tareas repetitivas con plantillas");
+          } else if (areaMejorar === "Hábitos") {
+            prioridades.push("Diseñar ritual de inicio de día de 10 minutos");
+            prioridades.push("Usar recordatorios visuales para cada hábito");
+          } else {
+            prioridades.push("Definir victoria semanal en dinero, tiempo y energía");
+            prioridades.push("Compartir tu plan con alguien de confianza");
+          }
+
+          if (nivelCaos === "Siento que estoy apagando fuegos todo el tiempo") {
+            prioridades.push("Respirar profundo antes de responder a urgencias");
+          }
+
+          return {
+            finanzas: `<ul class="list-disc space-y-2 pl-5"><li>${finanzasMensaje}</li><li>Activa alertas de gasto en tu banco para mantenerte dentro del plan.</li></ul>`,
+            habitos: `<ul class="list-disc space-y-2 pl-5">${habitosBase.map((habito) => `<li>${habito}</li>`).join("")}</ul>`,
+            horario: `<p class="font-medium text-white">Horario ideal</p><p class="text-slate-300">${horarioSugerido}</p>`,
+            sieteDias: `<ul class="list-disc space-y-2 pl-5">${prioridades.map((item) => `<li>${item}</li>`).join("")}</ul>`,
+          };
+        };
+
+        const saveLastPlan = (outputs, inputs) => {
+          // Guardar la última generación en memoria para permitir persistirla
+          lastGeneratedPlan = {
+            inputs: { ...inputs },
+            outputs: { ...outputs },
+          };
+        };
+
+        const simulatePlanGeneration = (formValues) => {
+          // Simular un retardo antes de mostrar los resultados
+          loadingIndicator.classList.remove("hidden");
+          const outputs = buildPlanOutputs(formValues);
+          setTimeout(() => {
+            updatePlanOutputs(outputs);
+            saveLastPlan(outputs, {
+              ingresos: formValues.ingresos,
+              gastos: formValues.gastos,
+              metas: formValues.metas,
+              horario: formValues.horarioDisponible,
+              area: formValues.areaMejorar,
+              caos: formValues.nivelCaos,
+            });
+            loadingIndicator.classList.add("hidden");
+            hidePlanNameError();
+          }, 900);
+        };
+
+        const handleFormSubmit = (event) => {
+          // Validar y generar el plan cuando se envía el formulario
+          event.preventDefault();
+          const formValues = getFormValues();
+          const validationMessage = validateFormValues(formValues);
+          if (validationMessage) {
+            showFormError(validationMessage);
+            return;
+          }
+          hideFormError();
+          simulatePlanGeneration(formValues);
+        };
+
+        // --- Eventos ---
+
+        const initTemplateChips = () => {
+          // Permitir rellenar el formulario con plantillas predefinidas
+          document.querySelectorAll(".template-chip").forEach((chip) => {
+            chip.addEventListener("click", () => {
+              fillFormInputs({
+                ingresos: chip.dataset.ingresos || "",
+                gastos: chip.dataset.gastos || "",
+                metas: chip.dataset.metas || "",
+                horario: chip.dataset.horario || "",
+                area: chip.dataset.area || "Dinero",
+                caos: chip.dataset.caos || "Tranquilo, solo quiero optimizar",
+              });
+              hideFormError();
+            });
+          });
+        };
+
+        const initPlanSaving = () => {
+          // Guardar planes en localStorage con validaciones básicas
+          savePlanBtn.addEventListener("click", () => {
+            const desiredName = planNameInput.value.trim();
+
+            if (!desiredName) {
+              showPlanNameError("Por favor ingresa un nombre.");
+              return;
+            }
+
+            if (!lastGeneratedPlan) {
+              showPlanNameError("Genera un plan antes de guardarlo.");
+              return;
+            }
+
+            savedPlans[desiredName] = {
+              inputs: { ...lastGeneratedPlan.inputs },
+              outputs: { ...lastGeneratedPlan.outputs },
+            };
+            persistPlans();
+            renderSavedPlans();
+            hidePlanNameError();
+          });
+
+          savedPlansList.addEventListener("click", (event) => {
+            const button = event.target.closest("button[data-action]");
+            if (!button) return;
+
+            const action = button.dataset.action;
+            const planName = decodeURIComponent(button.dataset.name || "");
+            const planData = savedPlans[planName];
+            if (!planData) return;
+
+            if (action === "load") {
+              fillFormInputs(planData.inputs);
+              updatePlanOutputs(planData.outputs);
+              lastGeneratedPlan = {
+                inputs: { ...planData.inputs },
+                outputs: { ...planData.outputs },
+              };
+              planNameInput.value = planName;
+              hidePlanNameError();
+            } else if (action === "delete") {
+              delete savedPlans[planName];
+              persistPlans();
+              renderSavedPlans();
+              if (planNameInput.value.trim() === planName) {
+                planNameInput.value = "";
+              }
+            }
+          });
+        };
+
+        const initFaqAccordion = () => {
+          // Mostrar u ocultar cada respuesta de la sección de FAQ
+          document.querySelectorAll(".faq-toggle").forEach((button) => {
+            button.addEventListener("click", () => {
+              const content = button.nextElementSibling;
+              content.classList.toggle("hidden");
+              const icon = button.querySelector("span");
+              icon.textContent = content.classList.contains("hidden") ? "+" : "-";
+            });
+          });
+        };
+
+        // --- Inicialización ---
+
+        const init = () => {
+          setFooterYear();
+          enableSmoothScroll();
+          animateSectionsOnLoad();
+          initMobileMenu();
+          initTemplateChips();
+          initPlanSaving();
+          initFaqAccordion();
+          loadPlansFromStorage();
+          lifeForm.addEventListener("submit", handleFormSubmit);
+        };
+
+        init();
+      })();
     </script>
   </body>
 </html>
