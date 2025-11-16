@@ -242,6 +242,37 @@
                 <div id="planSieteDias" class="mt-2 text-sm text-slate-200">Aquí tendrás tus prioridades inmediatas.</div>
               </div>
             </div>
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+              <div>
+                <p class="text-xs uppercase text-slate-400">Guardar este plan</p>
+                <p class="text-xs text-slate-400">Asigna un nombre y guárdalo solo en tu navegador.</p>
+              </div>
+              <div class="space-y-2">
+                <label for="planName" class="text-sm text-slate-300">Nombre del plan</label>
+                <input
+                  id="planName"
+                  type="text"
+                  placeholder="Ej. Plan marzo"
+                  class="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-2 text-sm text-white placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none"
+                />
+                <p id="planNameError" class="hidden text-xs text-rose-300">Por favor ingresa un nombre.</p>
+              </div>
+              <button
+                id="savePlanBtn"
+                class="inline-flex w-full items-center justify-center rounded-full bg-indigo-500 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-indigo-500/30 transition hover:bg-indigo-400"
+              >
+                Guardar plan
+              </button>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+              <div>
+                <p class="text-xs uppercase text-slate-400">Planes guardados</p>
+                <p class="text-xs text-slate-400">Puedes guardarlos, cargarlos o eliminarlos cuando quieras.</p>
+              </div>
+              <div id="savedPlansList" class="space-y-3 text-sm text-slate-200">
+                <p class="text-slate-400">Todavía no has guardado ningún plan.</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -374,6 +405,126 @@
       const planHabitosEl = document.getElementById("planHabitos");
       const planHorarioEl = document.getElementById("planHorario");
       const planSieteDiasEl = document.getElementById("planSieteDias");
+      const planNameInput = document.getElementById("planName");
+      const planNameError = document.getElementById("planNameError");
+      const savePlanBtn = document.getElementById("savePlanBtn");
+      const savedPlansList = document.getElementById("savedPlansList");
+
+      const STORAGE_KEY = "aiLifeOrganizerPlans";
+      let savedPlans = {};
+      let lastGeneratedPlan = null;
+
+      const hidePlanNameError = () => {
+        planNameError.classList.add("hidden");
+      };
+
+      const showPlanNameError = (message) => {
+        planNameError.textContent = message;
+        planNameError.classList.remove("hidden");
+      };
+
+      const persistPlans = () => {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(savedPlans));
+      };
+
+      const renderSavedPlans = () => {
+        const planNames = Object.keys(savedPlans);
+        if (planNames.length === 0) {
+          savedPlansList.innerHTML = '<p class="text-slate-400">Todavía no has guardado ningún plan.</p>';
+          return;
+        }
+
+        savedPlansList.innerHTML = planNames
+          .map((name) => {
+            const encodedName = encodeURIComponent(name);
+            return `
+              <div class="flex flex-col gap-2 rounded-xl border border-white/10 bg-black/20 p-3 sm:flex-row sm:items-center sm:justify-between">
+                <p class="text-sm font-medium text-white">${name}</p>
+                <div class="flex flex-wrap gap-2 text-xs">
+                  <button data-action="load" data-name="${encodedName}" class="rounded-full border border-white/10 bg-white/5 px-3 py-1 font-medium text-white hover:bg-white/10">Cargar</button>
+                  <button data-action="delete" data-name="${encodedName}" class="rounded-full border border-white/10 bg-white/5 px-3 py-1 font-medium text-white hover:bg-white/10">Eliminar</button>
+                </div>
+              </div>
+            `;
+          })
+          .join("");
+      };
+
+      const loadPlansFromStorage = () => {
+        try {
+          const stored = localStorage.getItem(STORAGE_KEY);
+          savedPlans = stored ? JSON.parse(stored) : {};
+        } catch (error) {
+          savedPlans = {};
+        }
+        renderSavedPlans();
+      };
+
+      const updatePlanOutputs = (outputs) => {
+        planFinanzasEl.innerHTML = outputs.finanzas;
+        planHabitosEl.innerHTML = outputs.habitos;
+        planHorarioEl.innerHTML = outputs.horario;
+        planSieteDiasEl.innerHTML = outputs.sieteDias;
+      };
+
+      const fillFormInputs = (inputs) => {
+        document.getElementById("ingresos").value = inputs.ingresos;
+        document.getElementById("gastos").value = inputs.gastos;
+        document.getElementById("metas").value = inputs.metas;
+        document.getElementById("horario").value = inputs.horario;
+        document.getElementById("area").value = inputs.area;
+        document.getElementById("caos").value = inputs.caos;
+      };
+
+      savePlanBtn.addEventListener("click", () => {
+        const desiredName = planNameInput.value.trim();
+
+        if (!desiredName) {
+          showPlanNameError("Por favor ingresa un nombre.");
+          return;
+        }
+
+        if (!lastGeneratedPlan) {
+          showPlanNameError("Genera un plan antes de guardarlo.");
+          return;
+        }
+
+        savedPlans[desiredName] = {
+          inputs: { ...lastGeneratedPlan.inputs },
+          outputs: { ...lastGeneratedPlan.outputs },
+        };
+        persistPlans();
+        renderSavedPlans();
+        hidePlanNameError();
+      });
+
+      savedPlansList.addEventListener("click", (event) => {
+        const button = event.target.closest("button[data-action]");
+        if (!button) return;
+
+        const action = button.dataset.action;
+        const planName = decodeURIComponent(button.dataset.name || "");
+        const planData = savedPlans[planName];
+        if (!planData) return;
+
+        if (action === "load") {
+          fillFormInputs(planData.inputs);
+          updatePlanOutputs(planData.outputs);
+          lastGeneratedPlan = {
+            inputs: { ...planData.inputs },
+            outputs: { ...planData.outputs },
+          };
+          planNameInput.value = planName;
+          hidePlanNameError();
+        } else if (action === "delete") {
+          delete savedPlans[planName];
+          persistPlans();
+          renderSavedPlans();
+          if (planNameInput.value.trim() === planName) {
+            planNameInput.value = "";
+          }
+        }
+      });
 
       lifeForm.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -440,9 +591,29 @@
 
           planSieteDiasEl.innerHTML = `<ul class="list-disc space-y-2 pl-5">${prioridades.map((item) => `<li>${item}</li>`).join("")}</ul>`;
 
+          lastGeneratedPlan = {
+            inputs: {
+              ingresos,
+              gastos,
+              metas,
+              horario: horarioDisponible,
+              area: areaMejorar,
+              caos: nivelCaos,
+            },
+            outputs: {
+              finanzas: planFinanzasEl.innerHTML,
+              habitos: planHabitosEl.innerHTML,
+              horario: planHorarioEl.innerHTML,
+              sieteDias: planSieteDiasEl.innerHTML,
+            },
+          };
+          hidePlanNameError();
+
           loadingIndicator.classList.add("hidden");
         }, 900);
       });
+
+      loadPlansFromStorage();
 
       // FAQ acordeón
       document.querySelectorAll(".faq-toggle").forEach((button) => {
